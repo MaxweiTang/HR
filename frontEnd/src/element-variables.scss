@@ -9,3 +9,27 @@ $--color-primary: teal;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 @import "~element-ui/packages/theme-chalk/src/index";
+
+body {
+    margin: 0;
+    padding: 0;
+}
+.el-input__inner:focus {
+    outline: none;
+    border-color: #606266;
+}
+
+.el-breadcrumb__inner.is-link:hover, .el-breadcrumb__inner a:hover {
+    color: #ffd04b;
+    cursor: pointer;
+}
+.el-breadcrumb {
+    height: 6vh !important;
+}
+.el-menu {
+    border: none;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #606266;
+    color: #FFFFFF;
+}
