@@ -246,6 +246,11 @@
             <version>3.0.1</version>
         </dependency>
         <!-- 上传组件包 end -->
+        <dependency>
+			<groupId>com.github.bingoohuang</groupId>
+			<artifactId>patchca</artifactId>
+			<version>0.0.1</version>
+		</dependency>
     </dependencies>
     <build>
         <finalName>Bishe</finalName>
