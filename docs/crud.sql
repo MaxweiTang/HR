@@ -11,8 +11,8 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 -- 导出 bishe 的数据库结构
-CREATE DATABASE IF NOT EXISTS `bishe` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `bishe`;
+CREATE DATABASE IF NOT EXISTS `hr` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `hr`;
 
 
 -- 导出  表 bishe.departments 结构
