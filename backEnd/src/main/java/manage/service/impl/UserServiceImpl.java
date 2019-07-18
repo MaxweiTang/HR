@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
         UserAuth userAuth = new UserAuth();
         userAuth.setId(userId);
         userAuth.setPassword(newPass);
-        userAuthMapper.insertSelective(userAuth);
+        userAuthMapper.updateByPrimaryKeySelective(userAuth);
         return null;
     }
 

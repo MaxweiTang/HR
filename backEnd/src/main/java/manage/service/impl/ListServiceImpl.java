@@ -186,6 +186,7 @@ public class ListServiceImpl implements ListService {
             TrainProgramVO trainProgramVO = new TrainProgramVO();
             trainProgramVO.setId(program.getId());
             trainProgramVO.setName(program.getName());
+            trainProgramVOs.add(trainProgramVO);
         }
         return trainProgramVOs;
     };

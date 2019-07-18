@@ -19,7 +19,7 @@
    </mappers>
 
       -->
-    <typeAliases>
+    <!-- <typeAliases>
         <typeAlias alias="PageInfo" type="manage.util.PageInfo" />
     </typeAliases>
     <plugins>
@@ -27,6 +27,6 @@
             <property name="dialect" value="mysql" />
             <property name="pageSqlId" value=".*ListPage.*" />
         </plugin>
-    </plugins>
+    </plugins> -->
     
 </configuration>

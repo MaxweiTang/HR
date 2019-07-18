@@ -65,7 +65,7 @@ public class ListController {
     }
 
     // 考勤
-    @RequestMapping(value = "/contract/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/attendant/list", method = RequestMethod.POST)
     public ResultVO attendant(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody AttendantSelectVO aVo) {
         // 验证权限
         return ResultVOUtil.success(listService.attendant(aVo));

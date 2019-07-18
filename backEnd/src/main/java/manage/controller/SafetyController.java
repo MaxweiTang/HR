@@ -57,7 +57,7 @@ public class SafetyController {
 	private UserService userService;
 
 	@RequestMapping(value = "token", method = RequestMethod.GET)
-	public ResultVO getToken() {
+	public ResultVO<Map<String,Object>> getToken() {
 		String token = UUID.randomUUID().toString();
 		Map<String, Object> map = new HashMap<String, Object>(16);
 		map.put("token", token);
@@ -105,10 +105,10 @@ public class SafetyController {
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public ResultVO login(@Valid @RequestBody UserAuthVO userAuthVO) {
 		String oldCaptcha = captchas.get(userAuthVO.getToken());
-		captchas.remove(userAuthVO.getToken());
-		if (oldCaptcha != userAuthVO.getCaptcha().toLowerCase()) {
+		if (!userAuthVO.getCaptcha().toLowerCase().equals(oldCaptcha)) {
 			return ResultVOUtil.retSysError("验证码不正确");
 		}
+		captchas.remove(userAuthVO.getToken());
 		LoginDTO rs = userService.validateUser(userAuthVO);
 		if (!rs.getValidated()) {
 			return ResultVOUtil.retSysError("用户身份验证失败");

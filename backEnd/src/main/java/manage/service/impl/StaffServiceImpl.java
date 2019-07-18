@@ -98,7 +98,7 @@ public class StaffServiceImpl implements StaffService {
         contract.setPositionId(newPosition.getId());
         contract.setContent(sVo.getContent());
 
-        staffMapper.insertSelective(newStaff);
+        staffMapper.updateByPrimaryKeySelective(newStaff);
         positionLogMapper.insert(newPosition);
         contractMapper.insertSelective(contract);
         return true;

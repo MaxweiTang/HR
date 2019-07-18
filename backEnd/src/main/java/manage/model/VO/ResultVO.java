@@ -39,7 +39,7 @@ public class ResultVO<T> {
         return this.msg;
     }
 
-    public T getData(T data) {
+    public T getData() {
         return this.data;
     }
 }

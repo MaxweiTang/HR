@@ -10,7 +10,7 @@
     <result column="reason" property="reason" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, staff_id, from, to, time, reason
+    id, staff_id, `from`, `to`, `time`, reason
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
