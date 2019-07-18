@@ -41,7 +41,7 @@
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
           <el-table-column prop="id" label="员工编号"></el-table-column>
-          <el-table-column prop="date" label="头像" width="100">
+          <el-table-column label="头像" width="100">
             <template slot-scope="scope">
               <div class="listAvatar" :style="{backgroundImage:'url(' + scope.row.image + ')'}"></div>
             </template>
@@ -68,12 +68,36 @@
         ></el-pagination>
       </div>
     </div>
-    <el-dialog title="员工1008611个人档案" :visible.sync="dialogTableVisible">
-      <el-table :data="tableData">
-        <el-table-column property="id" label="编号" width="150"></el-table-column>
-        <el-table-column property="name" label="姓名" width="200"></el-table-column>
-        <el-table-column property="duty" label="职位"></el-table-column>
-      </el-table>
+    <el-dialog title="员工1008611个人档案" :visible.sync="dialogTableVisible" width="80%">
+      <table width="100%" class="infoTable">
+        <tr>
+          <td class="personAvatar" rowspan="2">
+            <div class="listAvatar" :style="{backgroundImage:'url(' + personalInfo.image + ')'}"></div>
+          </td>
+          <td>员工编号：{{ personalInfo.id }}</td>
+          <td>姓名： {{ personalInfo.name }}</td>
+          <td>性别：{{ personalInfo.sex }}</td>
+          <td>
+            部门：
+            <el-input v-model="personalInfo.department" placeholder="部门" :disabled="true"></el-input>
+          </td>
+          <td>
+            职务：
+            <el-input v-model="personalInfo.duty" placeholder="职务" :disabled="true"></el-input>
+          </td>
+          <td>人员状态：{{ personalInfo.now }}</td>
+        </tr>
+        <tr>
+          <td>出生日期：{{ personalInfo.birth }}</td>
+          <td colspan="2">电话号码：{{ personalInfo.tel }}</td>
+          <td>学历：{{ personalInfo.degree }}</td>
+          <td colspan="2">入职时间：{{ personalInfo.entrytime }}</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="height: 7vh;">邮箱地址：{{ personalInfo.email }}</td>
+          <td colspan="5">备注：{{ personalInfo.remark }}</td>
+        </tr>
+      </table>
     </el-dialog>
   </div>
 </template>
@@ -90,7 +114,6 @@ export default {
       tableData: [
         {
           id: 1008611,
-          date: "2016-05-02",
           image: "https://s2.ax1x.com/2019/07/16/ZHLt8U.jpg",
           name: "张三",
           sex: "男",
@@ -100,7 +123,6 @@ export default {
         },
         {
           id: 1008611,
-          date: "2016-05-02",
           image: "https://s2.ax1x.com/2019/07/16/ZHLt8U.jpg",
           name: "张三",
           sex: "男",
@@ -110,7 +132,6 @@ export default {
         },
         {
           id: 1008611,
-          date: "2016-05-02",
           image: "https://s2.ax1x.com/2019/07/16/ZHLt8U.jpg",
           name: "张三",
           sex: "男",
@@ -120,7 +141,6 @@ export default {
         },
         {
           id: 1008611,
-          date: "2016-05-02",
           image: "https://s2.ax1x.com/2019/07/16/ZHLt8U.jpg",
           name: "张三",
           sex: "男",
@@ -128,7 +148,22 @@ export default {
           duty: "主管",
           now: "在职"
         }
-      ]
+      ],
+      personalInfo: {
+        id: 1008611,
+        image: "https://s2.ax1x.com/2019/07/16/ZHLt8U.jpg",
+        name: "张三",
+        sex: "男",
+        department: "开发部",
+        duty: "主管",
+        now: "在职",
+        degree: "本科",
+        tel: "13333000000",
+        birth: "1998-01-10",
+        email: "1002788303@qq.com",
+        entrytime: "2019-07-15",
+        remark: ""
+      }
     };
   },
   methods: {
@@ -227,7 +262,7 @@ export default {
   padding-top: 100%;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center;
+  /* background-position: center; */
 }
 .bottomArea {
   margin: 1vh 1.5vw;
@@ -257,5 +292,18 @@ export default {
   background-color: #606266;
   border: none;
   color: #fff;
+}
+.personAvatar {
+  width: 6vw;
+  height: 8vw;
+}
+.infoTable > tr > td {
+  border: 1px solid #000;
+}
+.el-input.is-disabled .el-input__inner {
+  color: #606266 !important;
+}
+.infoTable > tr > td > .el-input {
+  margin-bottom: 0 !important;
 }
 </style>
