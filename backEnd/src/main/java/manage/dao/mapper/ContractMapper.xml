@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="manage.dao.ContractMapper" >
-  <resultMap id="BaseResultMap" type="manage.model.Contract" >
+  <resultMap id="BaseResultMap" type="manage.model.DO.Contract" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="begin" property="begin" jdbcType="DATE" />
     <result column="end" property="end" jdbcType="DATE" />
@@ -22,13 +22,13 @@
     delete from contract
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="manage.model.Contract" >
+  <insert id="insert" parameterType="manage.model.DO.Contract" >
     insert into contract (id, begin, end, position_id, 
       content, remark)
     values (#{id,jdbcType=VARCHAR}, #{begin,jdbcType=DATE}, #{end,jdbcType=DATE}, #{positionId,jdbcType=VARCHAR}, 
       #{content,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="manage.model.Contract" >
+  <insert id="insertSelective" parameterType="manage.model.DO.Contract" >
     insert into contract
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -71,7 +71,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="manage.model.Contract" >
+  <update id="updateByPrimaryKeySelective" parameterType="manage.model.DO.Contract" >
     update contract
     <set >
       <if test="begin != null" >
@@ -92,7 +92,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="manage.model.Contract" >
+  <update id="updateByPrimaryKey" parameterType="manage.model.DO.Contract" >
     update contract
     set begin = #{begin,jdbcType=DATE},
       end = #{end,jdbcType=DATE},

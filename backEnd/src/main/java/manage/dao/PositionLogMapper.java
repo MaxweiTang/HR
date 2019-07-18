@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.PositionLog;
+import manage.model.DO.PositionLog;
 
 public interface PositionLogMapper {
     int deleteByPrimaryKey(String id);

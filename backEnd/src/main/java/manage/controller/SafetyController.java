@@ -53,7 +53,7 @@ public class SafetyController {
 	@Autowired
 	private RedisUtil redisutil;
 
-	@Resource
+	@Autowired
 	private UserService userService;
 
 	@RequestMapping(value = "token", method = RequestMethod.GET)

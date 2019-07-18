@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.Program;
+import manage.model.DO.Program;
 
 public interface ProgramMapper {
     int deleteByPrimaryKey(String id);

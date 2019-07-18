@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="manage.dao.SalaryMapper" >
-  <resultMap id="BaseResultMap" type="manage.model.Salary" >
+  <resultMap id="BaseResultMap" type="manage.model.DO.Salary" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="staff_id" property="staffId" jdbcType="VARCHAR" />
     <result column="base" property="base" jdbcType="INTEGER" />
@@ -24,7 +24,7 @@
     delete from salary
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="manage.model.Salary" >
+  <insert id="insert" parameterType="manage.model.DO.Salary" >
     insert into salary (id, staff_id, base, 
       extra, bonus, fine, 
       total, time)
@@ -32,7 +32,7 @@
       #{extra,jdbcType=INTEGER}, #{bonus,jdbcType=INTEGER}, #{fine,jdbcType=INTEGER}, 
       #{total,jdbcType=INTEGER}, #{time,jdbcType=DATE})
   </insert>
-  <insert id="insertSelective" parameterType="manage.model.Salary" >
+  <insert id="insertSelective" parameterType="manage.model.DO.Salary" >
     insert into salary
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -87,7 +87,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="manage.model.Salary" >
+  <update id="updateByPrimaryKeySelective" parameterType="manage.model.DO.Salary" >
     update salary
     <set >
       <if test="staffId != null" >
@@ -114,7 +114,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="manage.model.Salary" >
+  <update id="updateByPrimaryKey" parameterType="manage.model.DO.Salary" >
     update salary
     set staff_id = #{staffId,jdbcType=VARCHAR},
       base = #{base,jdbcType=INTEGER},

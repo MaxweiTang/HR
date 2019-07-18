@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.Attendance;
+import manage.model.DO.Attendance;
 
 public interface AttendanceMapper {
     int deleteByPrimaryKey(String id);

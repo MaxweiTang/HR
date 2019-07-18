@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="manage.dao.ProgramMapper" >
-  <resultMap id="BaseResultMap" type="manage.model.Program" >
+  <resultMap id="BaseResultMap" type="manage.model.DO.Program" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="time" property="time" jdbcType="DATE" />
@@ -21,13 +21,13 @@
     delete from program
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="manage.model.Program" >
+  <insert id="insert" parameterType="manage.model.DO.Program" >
     insert into program (id, name, time, 
       remark, deleted)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, 
       #{remark,jdbcType=VARCHAR}, #{deleted,jdbcType=TINYINT})
   </insert>
-  <insert id="insertSelective" parameterType="manage.model.Program" >
+  <insert id="insertSelective" parameterType="manage.model.DO.Program" >
     insert into program
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -64,7 +64,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="manage.model.Program" >
+  <update id="updateByPrimaryKeySelective" parameterType="manage.model.DO.Program" >
     update program
     <set >
       <if test="name != null" >
@@ -82,7 +82,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="manage.model.Program" >
+  <update id="updateByPrimaryKey" parameterType="manage.model.DO.Program" >
     update program
     set name = #{name,jdbcType=VARCHAR},
       time = #{time,jdbcType=DATE},

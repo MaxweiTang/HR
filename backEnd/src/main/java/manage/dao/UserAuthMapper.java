@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.UserAuth;
+import manage.model.DO.UserAuth;
 
 public interface UserAuthMapper {
     int deleteByPrimaryKey(String id);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="manage.dao.ProfileMapper" >
-  <resultMap id="BaseResultMap" type="manage.model.Profile" >
+  <resultMap id="BaseResultMap" type="manage.model.DO.Profile" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="abstract" property="abstract" jdbcType="VARCHAR" />
@@ -21,13 +21,13 @@
     delete from profile
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="manage.model.Profile" >
+  <insert id="insert" parameterType="manage.model.DO.Profile" >
     insert into profile (id, name, abstract, 
       remark, deleted)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{abstract,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR}, #{deleted,jdbcType=TINYINT})
   </insert>
-  <insert id="insertSelective" parameterType="manage.model.Profile" >
+  <insert id="insertSelective" parameterType="manage.model.DO.Profile" >
     insert into profile
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -64,7 +64,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="manage.model.Profile" >
+  <update id="updateByPrimaryKeySelective" parameterType="manage.model.DO.Profile" >
     update profile
     <set >
       <if test="name != null" >
@@ -82,7 +82,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="manage.model.Profile" >
+  <update id="updateByPrimaryKey" parameterType="manage.model.DO.Profile" >
     update profile
     set name = #{name,jdbcType=VARCHAR},
       abstract = #{abstract,jdbcType=VARCHAR},

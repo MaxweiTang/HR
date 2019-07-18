@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.People;
+import manage.model.DO.People;
 
 public interface PeopleMapper {
     int deleteByPrimaryKey(String id);

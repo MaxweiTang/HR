@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="manage.dao.DepartmentMapper" >
-  <resultMap id="BaseResultMap" type="manage.model.Department" >
+  <resultMap id="BaseResultMap" type="manage.model.DO.Department" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="deleted" property="deleted" jdbcType="TINYINT" />
@@ -19,13 +19,13 @@
     delete from department
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="manage.model.Department" >
+  <insert id="insert" parameterType="manage.model.DO.Department" >
     insert into department (id, name, deleted
       )
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{deleted,jdbcType=TINYINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="manage.model.Department" >
+  <insert id="insertSelective" parameterType="manage.model.DO.Department" >
     insert into department
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -50,7 +50,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="manage.model.Department" >
+  <update id="updateByPrimaryKeySelective" parameterType="manage.model.DO.Department" >
     update department
     <set >
       <if test="name != null" >
@@ -62,7 +62,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="manage.model.Department" >
+  <update id="updateByPrimaryKey" parameterType="manage.model.DO.Department" >
     update department
     set name = #{name,jdbcType=VARCHAR},
       deleted = #{deleted,jdbcType=TINYINT}

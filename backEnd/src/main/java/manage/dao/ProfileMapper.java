@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.Profile;
+import manage.model.DO.Profile;
 
 public interface ProfileMapper {
     int deleteByPrimaryKey(String id);

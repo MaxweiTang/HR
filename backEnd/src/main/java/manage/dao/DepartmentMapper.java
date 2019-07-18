@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.Department;
+import manage.model.DO.Department;
 
 public interface DepartmentMapper {
     int deleteByPrimaryKey(String id);

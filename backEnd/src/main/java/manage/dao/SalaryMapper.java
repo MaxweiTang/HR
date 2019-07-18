@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.Salary;
+import manage.model.DO.Salary;
 
 public interface SalaryMapper {
     int deleteByPrimaryKey(String id);

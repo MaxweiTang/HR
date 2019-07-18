@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="manage.dao.PositionLogMapper" >
-  <resultMap id="BaseResultMap" type="manage.model.PositionLog" >
+  <resultMap id="BaseResultMap" type="manage.model.DO.PositionLog" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="staff_id" property="staffId" jdbcType="VARCHAR" />
     <result column="from" property="from" jdbcType="VARCHAR" />
@@ -22,13 +22,13 @@
     delete from position_log
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="manage.model.PositionLog" >
+  <insert id="insert" parameterType="manage.model.DO.PositionLog" >
     insert into position_log (id, staff_id, from, 
       to, time, reason)
     values (#{id,jdbcType=VARCHAR}, #{staffId,jdbcType=VARCHAR}, #{from,jdbcType=VARCHAR}, 
       #{to,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, #{reason,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="manage.model.PositionLog" >
+  <insert id="insertSelective" parameterType="manage.model.DO.PositionLog" >
     insert into position_log
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -71,7 +71,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="manage.model.PositionLog" >
+  <update id="updateByPrimaryKeySelective" parameterType="manage.model.DO.PositionLog" >
     update position_log
     <set >
       <if test="staffId != null" >
@@ -92,7 +92,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="manage.model.PositionLog" >
+  <update id="updateByPrimaryKey" parameterType="manage.model.DO.PositionLog" >
     update position_log
     set staff_id = #{staffId,jdbcType=VARCHAR},
       from = #{from,jdbcType=VARCHAR},

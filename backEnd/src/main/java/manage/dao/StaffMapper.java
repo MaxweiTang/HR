@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.Staff;
+import manage.model.DO.Staff;
 
 public interface StaffMapper {
     int deleteByPrimaryKey(String id);

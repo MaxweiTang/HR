@@ -1,6 +1,6 @@
 package manage.dao;
 
-import manage.model.Contract;
+import manage.model.DO.Contract;
 
 public interface ContractMapper {
     int deleteByPrimaryKey(String id);

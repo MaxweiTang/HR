@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="manage.dao.AttendanceMapper" >
-  <resultMap id="BaseResultMap" type="manage.model.Attendance" >
+  <resultMap id="BaseResultMap" type="manage.model.DO.Attendance" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="staff_id" property="staffId" jdbcType="VARCHAR" />
     <result column="time" property="time" jdbcType="DATE" />
@@ -20,13 +20,13 @@
     delete from attendance
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="manage.model.Attendance" >
+  <insert id="insert" parameterType="manage.model.DO.Attendance" >
     insert into attendance (id, staff_id, time, 
       type)
     values (#{id,jdbcType=VARCHAR}, #{staffId,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, 
       #{type,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="manage.model.Attendance" >
+  <insert id="insertSelective" parameterType="manage.model.DO.Attendance" >
     insert into attendance
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -57,7 +57,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="manage.model.Attendance" >
+  <update id="updateByPrimaryKeySelective" parameterType="manage.model.DO.Attendance" >
     update attendance
     <set >
       <if test="staffId != null" >
@@ -72,7 +72,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="manage.model.Attendance" >
+  <update id="updateByPrimaryKey" parameterType="manage.model.DO.Attendance" >
     update attendance
     set staff_id = #{staffId,jdbcType=VARCHAR},
       time = #{time,jdbcType=DATE},
