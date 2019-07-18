@@ -18,11 +18,6 @@ import manage.util.PageInfo;
 import manage.base.BaseController;
 import java.util.*;
 
-/**
-* @author 曲文强
-* @version 创建时间：2018.04.18
-* @describe： 员工部门
-*/
 
 @Controller
 @RequestMapping("/")

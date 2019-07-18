@@ -1,0 +1,64 @@
+package manage.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import manage.model.VO.AttendantSelectVO;
+import manage.model.VO.ContractSelectVO;
+import manage.model.VO.ProfileSelectVO;
+import manage.model.VO.ResultVO;
+import manage.model.VO.TrainSelectVO;
+import manage.model.VO.UserInfoVO;
+import manage.service.ListService;
+import manage.util.ResultVOUtil;
+
+@RestController
+public class ListController {
+    @Autowired
+    ListService listService;
+
+    // 培训项目
+    @RequestMapping(value = "/program/list", method = RequestMethod.GET)
+    public ResultVO program(@RequestAttribute("userid") UserInfoVO uVo) {
+        // 验证权限
+        return ResultVOUtil.success(listService.program());
+    }
+
+    // 培训
+    @RequestMapping(value = "/train/list", method = RequestMethod.POST)
+    public ResultVO train(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody TrainSelectVO tVo) {
+        // 验证权限
+        return ResultVOUtil.success(listService.train(tVo));
+    }
+
+    @RequestMapping(value = "/department/list", method = RequestMethod.GET)
+    public ResultVO department(@RequestAttribute("userid") UserInfoVO uVo) {
+        // 验证权限
+        return ResultVOUtil.success(listService.department());
+    }
+
+    // 档案
+    @RequestMapping(value = "/profile/list", method = RequestMethod.POST)
+    public ResultVO profile(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody ProfileSelectVO profileSelectVO) {
+        // 验证权限
+        return ResultVOUtil.success(listService.profile(profileSelectVO));
+    }
+
+    // 合同
+    @RequestMapping(value = "/contract/list", method = RequestMethod.POST)
+    public ResultVO contract(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody ContractSelectVO cVo) {
+        // 验证权限
+        return ResultVOUtil.success(listService.contarct(cVo));
+    }
+
+    // 考勤
+    @RequestMapping(value = "/contract/list", method = RequestMethod.POST)
+    public ResultVO attendant(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody AttendantSelectVO aVo) {
+        // 验证权限
+        return ResultVOUtil.success(listService.attendant(aVo));
+    }
+}

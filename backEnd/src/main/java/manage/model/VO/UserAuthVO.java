@@ -3,6 +3,9 @@ package manage.model.VO;
 import javax.validation.constraints.NotNull;
 
 
+/**
+ * 上传的用来验证的用户信息
+ */
 public class UserAuthVO {
 
     /**

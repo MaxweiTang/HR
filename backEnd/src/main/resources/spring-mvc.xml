@@ -60,4 +60,14 @@
         <property name="maxInMemorySize" value="40960" />
     </bean>
     
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <mvc:exclude-mapping path="/safety/login" />
+            <mvc:exclude-mapping path="/safety/token" />
+            <mvc:exclude-mapping path="/safety/captcha/**" />
+            <bean class="manage.interceptor.TokenInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
 </beans>
