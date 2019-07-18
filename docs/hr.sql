@@ -1,40 +1,135 @@
-/*
-Navicat MySQL Data Transfer
+create schema hr collate utf8_general_ci;
 
-Source Server         : localhost_3306
-Source Server Version : 50525
-Source Host           : localhost:3306
-Source Database       : hr
+create table attendance
+(
+	id varchar(11) not null
+		primary key,
+	staff_id varchar(11) null comment '员工编号',
+	time date null comment '考勤时间',
+	type varchar(11) null comment '考勤情况；迟到、旷班、请假、出差、停职、事假'
+)
+comment '考勤';
 
-Target Server Type    : MYSQL
-Target Server Version : 50525
-File Encoding         : 65001
+create table contract
+(
+	id varchar(11) not null
+		primary key,
+	begin date null comment '合同开始时间',
+	end date null comment '合同截止时间',
+	position_id varchar(11) null comment '对应position_log中的某个ID',
+	content varchar(1000) null comment '合同内容',
+	remark varchar(300) null comment '备注'
+);
 
-Date: 2019-07-17 16:32:31
-*/
+create table department
+(
+	id varchar(11) not null
+		primary key,
+	name varchar(20) not null comment '部门名称',
+	deleted tinyint default 0 null comment '部门是否解散；0没有'
+)
+comment '部门';
 
-SET FOREIGN_KEY_CHECKS=0;
+create table people
+(
+	id varchar(11) not null
+		primary key,
+	name varchar(50) null comment '姓名',
+	sex varchar(10) null comment '性别',
+	birth date null,
+	tel varchar(20) null,
+	email varchar(50) null,
+	degree varchar(20) null comment '学位',
+	register_date date null comment '登记时间',
+	remark varchar(100) null comment '备注',
+	deleted tinyint default 0 null comment '信息是否删除'
+)
+comment '所有人员信息，包括应聘但没入职的';
 
+create table position_log
+(
+	id varchar(11) not null
+		primary key,
+	staff_id varchar(11) not null comment '员工ID',
+	`from` varchar(11) null comment '旧职位',
+	`to` varchar(11) null comment '新职位',
+	time date null comment '调动时间',
+	reason varchar(100) null comment '调动理由'
+);
 
-DROP DATABASE IF EXISTS `hr`;
-CREATE DATABASE `hr` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `hr`;
+create table profile
+(
+	id varchar(11) not null
+		primary key,
+	name varchar(30) null comment '档案名称',
+	abstract varchar(50) null comment '内容摘要',
+	remark varchar(50) null comment '备注',
+	deleted tinyint default 0 null comment '档案是否删除'
+)
+comment '档案';
 
--- ----------------------------
--- Table structure for `attendance`
--- ----------------------------
-DROP TABLE IF EXISTS `attendance`;
-CREATE TABLE `attendance` (
-  `id` varchar(11) NOT NULL,
-  `staff_id` varchar(11) DEFAULT NULL COMMENT '员工编号',
-  `time` date DEFAULT NULL COMMENT '考勤时间',
-  `type` varchar(11) DEFAULT NULL COMMENT '考勤情况；迟到、旷班、请假、出差、停职、事假',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='考勤';
+create table program
+(
+	id varchar(11) not null
+		primary key,
+	name varchar(30) null comment '项目名称',
+	time date null comment '项目创建时间',
+	remark varchar(40) null comment '备注',
+	deleted tinyint default 0 null comment '项目是否删除'
+)
+comment '培训项目';
 
--- ----------------------------
--- Records of attendance
--- ----------------------------
+create table salary
+(
+	id varchar(11) not null
+		primary key,
+	staff_id varchar(11) not null comment '员工ID',
+	base int default 0 not null comment '基本工资',
+	extra int default 0 not null comment '绩效工资',
+	bonus int default 0 not null comment '奖金',
+	fine int default 0 not null comment '罚款',
+	total int default 0 not null comment '合计工资',
+	time date null comment '工资发放时间'
+)
+comment '工资';
+
+create table staff
+(
+	id varchar(11) not null comment '员工编号'
+		primary key,
+	pid varchar(11) null comment 'people id',
+	position_id varchar(20) null comment '职位；对应与 position_log 中的某个 ID',
+	status varchar(10) null comment '离职、在职',
+	department_id varchar(11) null comment '所在部门ID',
+	contract_id varchar(11) null comment '合同ID',
+	profile_id varchar(11) null comment '档案ID',
+	deleted tinyint default 0 null comment '信息是否删除'
+)
+comment '员工信息';
+
+create table train
+(
+	id varchar(11) not null
+		primary key,
+	staff_id varchar(11) null comment '员工ID',
+	program_id varchar(11) null comment '参加的培训项目的ID',
+	time date null comment '培训时间',
+	result varchar(30) null comment '培训评价'
+)
+comment '培训记录表';
+
+create table user_auth
+(
+	id varchar(11) not null
+		primary key,
+	staff_id varchar(11) not null comment '职员ID',
+	password varchar(30) not null,
+	avatar varchar(30) null comment '头像的地址，如：/avatar/1.png',
+	auth_level int default 0 not null comment '授权登记；普通用户为0，管理员为1',
+	deleted tinyint default 0 null comment '账号是否删除'
+)
+comment '登录信息';
+
 INSERT INTO `attendance` VALUES ('3001', '201604002', '2016-06-14', '迟到');
 INSERT INTO `attendance` VALUES ('3002', '201604018', '2016-06-15', '旷班');
 INSERT INTO `attendance` VALUES ('3003', '201603995', '2016-06-16', '迟到');
@@ -59,23 +154,6 @@ INSERT INTO `attendance` VALUES ('3021', '201604009', '2016-07-04', '迟到');
 INSERT INTO `attendance` VALUES ('3022', '201604003', '2016-07-08', '事假');
 INSERT INTO `attendance` VALUES ('3023', '201603985', '2016-07-09', '迟到');
 
--- ----------------------------
--- Table structure for `contract`
--- ----------------------------
-DROP TABLE IF EXISTS `contract`;
-CREATE TABLE `contract` (
-  `id` varchar(11) NOT NULL,
-  `begin` date DEFAULT NULL COMMENT '合同开始时间',
-  `end` date DEFAULT NULL COMMENT '合同截止时间',
-  `position_id` varchar(11) DEFAULT NULL COMMENT '对应position_log中的某个ID',
-  `content` varchar(1000) DEFAULT NULL COMMENT '合同内容',
-  `remark` varchar(300) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of contract
--- ----------------------------
 INSERT INTO `contract` VALUES ('3981', '2012-01-01', '2022-06-01', '', 'abc1', null);
 INSERT INTO `contract` VALUES ('3982', '2012-01-01', '2022-06-01', '', 'abc2', null);
 INSERT INTO `contract` VALUES ('3983', '2012-01-01', '2022-06-01', '', 'abc3', null);
@@ -116,20 +194,6 @@ INSERT INTO `contract` VALUES ('4018', '2012-01-01', '2022-06-01', '', 'abc37', 
 INSERT INTO `contract` VALUES ('4020', '2012-01-01', '2022-06-01', '', 'abc38', null);
 INSERT INTO `contract` VALUES ('4021', '2012-01-01', '2022-06-01', '', 'abc39', null);
 
--- ----------------------------
--- Table structure for `department`
--- ----------------------------
-DROP TABLE IF EXISTS `department`;
-CREATE TABLE `department` (
-  `id` varchar(11) NOT NULL,
-  `name` varchar(20) NOT NULL COMMENT '部门名称',
-  `deleted` tinyint(4) DEFAULT '0' COMMENT '部门是否解散；0没有',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='部门';
-
--- ----------------------------
--- Records of department
--- ----------------------------
 INSERT INTO `department` VALUES ('2001', '保安部', '0');
 INSERT INTO `department` VALUES ('2002', '清洁部', '0');
 INSERT INTO `department` VALUES ('2003', '秘书部', '0');
@@ -140,27 +204,6 @@ INSERT INTO `department` VALUES ('2007', '营销部', '0');
 INSERT INTO `department` VALUES ('2008', '监督部', '0');
 INSERT INTO `department` VALUES ('2009', '已离职', '0');
 
--- ----------------------------
--- Table structure for `people`
--- ----------------------------
-DROP TABLE IF EXISTS `people`;
-CREATE TABLE `people` (
-  `id` varchar(11) NOT NULL,
-  `name` varchar(50) DEFAULT NULL COMMENT '姓名',
-  `sex` varchar(10) DEFAULT NULL COMMENT '性别',
-  `birth` date DEFAULT NULL,
-  `tel` varchar(20) DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `degree` varchar(20) DEFAULT NULL COMMENT '学位',
-  `register_date` date DEFAULT NULL COMMENT '登记时间',
-  `remark` varchar(100) DEFAULT NULL COMMENT '备注',
-  `deleted` tinyint(4) DEFAULT '0' COMMENT '信息是否删除',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='所有人员信息，包括应聘但没入职的';
-
--- ----------------------------
--- Records of people
--- ----------------------------
 INSERT INTO `people` VALUES ('201603981', '周正华', '男', '1997-10-10', '17780815403', 'WA4L4A@V1NT5N.com', '高中', '2016-09-01', '和席包路雁川', '0');
 INSERT INTO `people` VALUES ('201603982', '周成龙', '男', '1997-10-10', '18281140583', 'JW3E1P@L25DS4.com', '高中', '2016-09-01', '卫包纪苗秋逸', '0');
 INSERT INTO `people` VALUES ('201603983', '钟刚锐', '男', '1997-10-10', '13658175365', '2AMQZX@IBK2E3.com', '高中', '2016-09-01', '熊俞臧孙雷尧', '0');
@@ -201,23 +244,6 @@ INSERT INTO `people` VALUES ('201604018', '王淑楠', '女', '1997-10-10', '183
 INSERT INTO `people` VALUES ('201604020', '鲁芸露', '女', '1997-10-10', '17781609370', '8O7J77@A8H0DT.com', '高中', '2016-09-01', '路曹姚潘洲明', '0');
 INSERT INTO `people` VALUES ('201604021', '李林芸', '女', '1997-10-10', '15729753325', 'EHCHIZ@6P03YR.com', '高中', '2016-09-01', '郝孙管花晨义', '0');
 
--- ----------------------------
--- Table structure for `position_log`
--- ----------------------------
-DROP TABLE IF EXISTS `position_log`;
-CREATE TABLE `position_log` (
-  `id` varchar(11) NOT NULL,
-  `staff_id` varchar(11) NOT NULL COMMENT '员工ID',
-  `from` varchar(11) DEFAULT NULL COMMENT '旧职位',
-  `to` varchar(11) DEFAULT NULL COMMENT '新职位',
-  `time` date DEFAULT NULL COMMENT '调动时间',
-  `reason` varchar(100) DEFAULT NULL COMMENT '调动理由',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of position_log
--- ----------------------------
 INSERT INTO `position_log` VALUES ('4001', '201603981', '保安', '空闲', '2019-02-14', '公司调配');
 INSERT INTO `position_log` VALUES ('4002', '201603982', '清洁工', '销售人员', '2019-05-16', '公司调配');
 INSERT INTO `position_log` VALUES ('4003', '201603983', '销售人员', '开发人员', '2019-05-17', '个人申请');
@@ -258,22 +284,6 @@ INSERT INTO `position_log` VALUES ('4037', '201604018', '保安', '销售人员'
 INSERT INTO `position_log` VALUES ('4038', '201604020', '清洁工', '销售人员', '2019-06-13', '公司调配');
 INSERT INTO `position_log` VALUES ('4039', '201604021', '销售人员', '空闲', '2019-06-15', '公司调配');
 
--- ----------------------------
--- Table structure for `profile`
--- ----------------------------
-DROP TABLE IF EXISTS `profile`;
-CREATE TABLE `profile` (
-  `id` varchar(11) NOT NULL,
-  `name` varchar(30) DEFAULT NULL COMMENT '档案名称',
-  `abstract` varchar(50) DEFAULT NULL COMMENT '内容摘要',
-  `remark` varchar(50) DEFAULT NULL COMMENT '备注',
-  `deleted` tinyint(4) DEFAULT '0' COMMENT '档案是否删除',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='档案';
-
--- ----------------------------
--- Records of profile
--- ----------------------------
 INSERT INTO `profile` VALUES ('6001', '周正华的档案', '档案内容1', null, '0');
 INSERT INTO `profile` VALUES ('6002', '周成龙的档案', '档案内容2', null, '0');
 INSERT INTO `profile` VALUES ('6003', '钟刚锐的档案', '档案内容3', null, '0');
@@ -314,22 +324,6 @@ INSERT INTO `profile` VALUES ('6037', '王淑楠的档案', '档案内容37', nu
 INSERT INTO `profile` VALUES ('6038', '鲁芸露的档案', '档案内容38', null, '0');
 INSERT INTO `profile` VALUES ('6039', '李林芸的档案', '档案内容39', null, '0');
 
--- ----------------------------
--- Table structure for `program`
--- ----------------------------
-DROP TABLE IF EXISTS `program`;
-CREATE TABLE `program` (
-  `id` varchar(11) NOT NULL,
-  `name` varchar(30) DEFAULT NULL COMMENT '项目名称',
-  `time` date DEFAULT NULL COMMENT '项目创建时间',
-  `remark` varchar(40) DEFAULT NULL COMMENT '备注',
-  `deleted` tinyint(4) DEFAULT '0' COMMENT '项目是否删除',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='培训项目';
-
--- ----------------------------
--- Records of program
--- ----------------------------
 INSERT INTO `program` VALUES ('7001', 'C', '2019-02-12', '项目备注1', '0');
 INSERT INTO `program` VALUES ('7002', 'Java', '2019-04-10', '项目备注2', '0');
 INSERT INTO `program` VALUES ('7003', 'C#', '2019-05-18', '项目备注3', '0');
@@ -337,25 +331,6 @@ INSERT INTO `program` VALUES ('7004', 'JS', '2019-06-04', '项目备注4', '0');
 INSERT INTO `program` VALUES ('7005', 'Html', '2019-06-29', '项目备注5', '0');
 INSERT INTO `program` VALUES ('7006', 'Python', '2019-07-11', '项目备注6', '0');
 
--- ----------------------------
--- Table structure for `salary`
--- ----------------------------
-DROP TABLE IF EXISTS `salary`;
-CREATE TABLE `salary` (
-  `id` varchar(11) NOT NULL,
-  `staff_id` varchar(11) NOT NULL COMMENT '员工ID',
-  `base` int(11) NOT NULL DEFAULT '0' COMMENT '基本工资',
-  `extra` int(11) NOT NULL DEFAULT '0' COMMENT '绩效工资',
-  `bonus` int(11) NOT NULL DEFAULT '0' COMMENT '奖金',
-  `fine` int(11) NOT NULL DEFAULT '0' COMMENT '罚款',
-  `total` int(11) NOT NULL DEFAULT '0' COMMENT '合计工资',
-  `time` date DEFAULT NULL COMMENT '工资发放时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='工资';
-
--- ----------------------------
--- Records of salary
--- ----------------------------
 INSERT INTO `salary` VALUES ('8001', '201603981', '4000', '800', '800', '200', '5400', '2019-07-17');
 INSERT INTO `salary` VALUES ('8002', '201603982', '4000', '2200', '1400', '1400', '6200', '2019-07-17');
 INSERT INTO `salary` VALUES ('8003', '201603983', '6500', '1400', '800', '200', '8500', '2019-07-17');
@@ -396,25 +371,6 @@ INSERT INTO `salary` VALUES ('8037', '201604018', '11000', '1200', '2000', '650'
 INSERT INTO `salary` VALUES ('8038', '201604020', '8000', '1500', '1200', '0', '10700', '2019-07-17');
 INSERT INTO `salary` VALUES ('8039', '201604021', '6500', '1200', '800', '0', '8500', '2019-07-17');
 
--- ----------------------------
--- Table structure for `staff`
--- ----------------------------
-DROP TABLE IF EXISTS `staff`;
-CREATE TABLE `staff` (
-  `id` varchar(11) NOT NULL COMMENT '员工编号',
-  `pid` varchar(11) DEFAULT NULL COMMENT 'people id',
-  `position_id` varchar(20) DEFAULT NULL COMMENT '职位；对应与 position_log 中的某个 ID',
-  `status` varchar(10) DEFAULT NULL COMMENT '离职、在职',
-  `department_id` varchar(11) DEFAULT NULL COMMENT '所在部门ID',
-  `contract_id` varchar(11) DEFAULT NULL COMMENT '合同ID',
-  `profile_id` varchar(11) DEFAULT NULL COMMENT '档案ID',
-  `deleted` tinyint(4) DEFAULT '0' COMMENT '信息是否删除',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='员工信息';
-
--- ----------------------------
--- Records of staff
--- ----------------------------
 INSERT INTO `staff` VALUES ('2001', '201603981', '4001', '离职', '2009', '3981', '6001', '0');
 INSERT INTO `staff` VALUES ('2002', '201603982', '4002', '在职', '2007', '3982', '6002', '0');
 INSERT INTO `staff` VALUES ('2003', '201603983', '4003', '在职', '2006', '3983', '6003', '0');
@@ -455,23 +411,15 @@ INSERT INTO `staff` VALUES ('2037', '201604018', '4037', '在职', '2007', '4018
 INSERT INTO `staff` VALUES ('2038', '201604020', '4038', '在职', '2007', '4020', '6038', '0');
 INSERT INTO `staff` VALUES ('2039', '201604021', '4039', '离职', '2009', '4021', '6039', '0');
 
--- ----------------------------
--- Table structure for `user_auth`
--- ----------------------------
-DROP TABLE IF EXISTS `user_auth`;
-CREATE TABLE `user_auth` (
-  `id` varchar(11) NOT NULL,
-  `staff_id` varchar(11) NOT NULL COMMENT '职员ID',
-  `password` varchar(30) NOT NULL,
-  `avatar` varchar(30) DEFAULT NULL COMMENT '头像的地址，如：/avatar/1.png',
-  `auth_level` int(11) NOT NULL DEFAULT '0' COMMENT '授权登记；普通用户为0，管理员为1',
-  `deleted` tinyint(4) DEFAULT '0' COMMENT '账号是否删除',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='登录信息';
+INSERT INTO `train` VALUES ('5001', '201603988', '7001', '2019-07-13', '优秀');
+INSERT INTO `train` VALUES ('5002', '201603989', '7002', '2019-07-11', '优秀');
+INSERT INTO `train` VALUES ('5003', '201603990', '7003', '2019-07-13', '良好');
+INSERT INTO `train` VALUES ('5004', '201603991', '7006', '2019-07-11', '优秀');
+INSERT INTO `train` VALUES ('5005', '201603992', '7001', '2019-07-13', '一般');
+INSERT INTO `train` VALUES ('5006', '201603993', '7005', '2019-07-09', '优秀');
+INSERT INTO `train` VALUES ('5007', '201603994', '7006', '2019-07-13', '一般');
+INSERT INTO `train` VALUES ('5008', '201603995', '7004', '2019-07-12', '差');
 
--- ----------------------------
--- Records of user_auth
--- ----------------------------
 INSERT INTO `user_auth` VALUES ('201603981', '1001', '382718', '/avatar/1.png', '0', '0');
 INSERT INTO `user_auth` VALUES ('201603982', '1002', '423215', '/avatar/2.png', '0', '0');
 INSERT INTO `user_auth` VALUES ('201603983', '1003', '490352', '/avatar/3.png', '0', '0');
@@ -511,15 +459,3 @@ INSERT INTO `user_auth` VALUES ('201604017', '1036', '700228', '/avatar/36.png',
 INSERT INTO `user_auth` VALUES ('201604018', '1037', '370550', '/avatar/37.png', '0', '0');
 INSERT INTO `user_auth` VALUES ('201604020', '1038', '333910', '/avatar/38.png', '0', '0');
 INSERT INTO `user_auth` VALUES ('201604021', '1039', '155904', '/avatar/39.png', '0', '0');
-
-create table train
-(
-	id varchar(11) null,
-	staff_id varchar(11) null comment '员工ID',
-	program_id varchar(11) null comment '参加的培训项目的ID',
-	time date null comment '培训时间',
-	result varchar(30) null comment '培训评价'
-)
-comment '培训记录表';
-
-

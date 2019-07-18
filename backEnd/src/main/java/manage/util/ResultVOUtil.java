@@ -7,7 +7,7 @@ public class ResultVOUtil {
 
 
     public static <T> ResultVO<T> success(T object) {
-        ResultVO<T> resultVO = new ResultVO<>();
+        ResultVO<T> resultVO = new ResultVO<T>();
         resultVO.setData(object);
         resultVO.setCode(ResultEnum.SUCCESS.getCode());
         resultVO.setMsg(ResultEnum.SUCCESS.getMsg());

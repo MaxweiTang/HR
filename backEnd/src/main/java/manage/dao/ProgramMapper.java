@@ -1,5 +1,7 @@
 package manage.dao;
 
+import java.util.List;
+
 import manage.model.DO.Program;
 
 public interface ProgramMapper {
@@ -9,6 +11,7 @@ public interface ProgramMapper {
 
     int insertSelective(Program record);
 
+    List<Program> selectAll();
     Program selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(Program record);

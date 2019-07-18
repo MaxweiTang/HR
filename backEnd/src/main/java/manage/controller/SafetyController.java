@@ -20,6 +20,7 @@ import manage.model.VO.UserInfoVO;
 import manage.service.UserService;
 import manage.util.RedisUtil;
 import manage.util.ResultVOUtil;
+import manage.util.ValidationGenerator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 
-import manage.util.ValidationGenerator;
 import manage.exception.*;
 import manage.constant.*;
 
@@ -59,7 +59,7 @@ public class SafetyController {
 	@RequestMapping(value = "token", method = RequestMethod.GET)
 	public ResultVO getToken() {
 		String token = UUID.randomUUID().toString();
-		Map<String, Object> map = new HashMap<>(16);
+		Map<String, Object> map = new HashMap<String, Object>(16);
 		map.put("token", token);
 		return ResultVOUtil.success(map);
 	}

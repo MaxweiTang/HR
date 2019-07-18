@@ -1,5 +1,7 @@
 package manage.dao;
 
+import java.util.List;
+
 import manage.model.DO.Staff;
 
 public interface StaffMapper {
@@ -10,6 +12,8 @@ public interface StaffMapper {
     int insertSelective(Staff record);
 
     Staff selectByPrimaryKey(String id);
+
+    List<Staff> selectAll();
 
     int updateByPrimaryKeySelective(Staff record);
 

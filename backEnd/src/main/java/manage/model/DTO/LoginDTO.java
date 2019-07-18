@@ -3,7 +3,15 @@ package manage.model.DTO;
 public class LoginDTO {
     private boolean validated;
     private String token;
-    private String identity;
+    private Integer identity;
+
+    public Integer getIdentity() {
+        return this.identity;
+    }
+
+    public void setIdentity(Integer identity) {
+        this.identity = identity;
+    }
 
     public boolean getValidated() {
         return this.validated;
@@ -19,14 +27,6 @@ public class LoginDTO {
 
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public String getIdentity() {
-        return this.identity;
-    }
-
-    public void setIdentity(String identity) {
-        this.identity = identity;
     }
 
 }

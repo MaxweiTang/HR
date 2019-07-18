@@ -4,7 +4,7 @@
     <artifactId>HR</artifactId>
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Bishe Maven Webapp</name>
+    <name>HR Maven Webapp</name>
     <url>http://maven.apache.org</url>
     
     <repositories>
@@ -241,7 +241,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>Bishe</finalName>
+        <finalName>HR</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>

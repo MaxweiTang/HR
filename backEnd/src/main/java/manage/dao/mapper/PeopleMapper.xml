@@ -16,6 +16,11 @@
   <sql id="Base_Column_List" >
     id, name, sex, birth, tel, email, degree, register_date, remark, deleted
   </sql>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from people
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

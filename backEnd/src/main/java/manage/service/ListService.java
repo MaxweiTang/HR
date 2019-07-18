@@ -2,16 +2,28 @@ package manage.service;
 
 import java.util.List;
 
+import manage.model.VO.AttendantListVO;
 import manage.model.VO.AttendantSelectVO;
+import manage.model.VO.ContractListVO;
 import manage.model.VO.ContractSelectVO;
 import manage.model.VO.DepartmentListVO;
+import manage.model.VO.PeopleListVO;
+import manage.model.VO.PeopleSelectVO;
 import manage.model.VO.ProfileListVO;
 import manage.model.VO.ProfileSelectVO;
+import manage.model.VO.StaffListVO;
+import manage.model.VO.StaffSelectVO;
 import manage.model.VO.TrainInfoVO;
 import manage.model.VO.TrainProgramVO;
 import manage.model.VO.TrainSelectVO;
 
 public interface ListService {
+
+    // 若 pvo 设置了 peole_id，选择特定用户的ID
+    List<PeopleListVO> people(PeopleSelectVO pVo);
+
+    List<StaffListVO> staff(StaffSelectVO sVo);
+
     /**
      * 
      * @return 如果没有返回空 List
@@ -36,10 +48,10 @@ public interface ListService {
     /**
      * 合同
      */
-    List<ProfileSelectVO> contarct(ContractSelectVO pVo);
+    List<ContractListVO> contarct(ContractSelectVO cVo);
 
     /**
      * 考勤
      */
-    List<ProfileSelectVO> attendant(AttendantSelectVO pVo);
+    List<AttendantListVO> attendant(AttendantSelectVO aVo);
 }

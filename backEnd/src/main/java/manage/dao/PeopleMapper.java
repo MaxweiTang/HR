@@ -1,5 +1,7 @@
 package manage.dao;
 
+import java.util.List;
+
 import manage.model.DO.People;
 
 public interface PeopleMapper {
@@ -10,6 +12,8 @@ public interface PeopleMapper {
     int insertSelective(People record);
 
     People selectByPrimaryKey(String id);
+
+    List<People> selectAll();
 
     int updateByPrimaryKeySelective(People record);
 

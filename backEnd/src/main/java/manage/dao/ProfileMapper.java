@@ -1,5 +1,7 @@
 package manage.dao;
 
+import java.util.List;
+
 import manage.model.DO.Profile;
 
 public interface ProfileMapper {
@@ -8,6 +10,8 @@ public interface ProfileMapper {
     int insert(Profile record);
 
     int insertSelective(Profile record);
+
+    List<Profile> selectAll();
 
     Profile selectByPrimaryKey(String id);
 

@@ -10,6 +10,7 @@ import manage.model.VO.PeopleSelectVO;
 import manage.model.VO.PeopleVO;
 import manage.model.VO.ResultVO;
 import manage.model.VO.UserInfoVO;
+import manage.service.ListService;
 import manage.service.PeopleService;
 import manage.util.ResultVOUtil;
 
@@ -26,12 +27,6 @@ public class PeopleController {
             return ResultVOUtil.retSysError("添加人员信息失败");
         }
         return ResultVOUtil.success();
-    }
-
-    @RequestMapping(value = "list", method = RequestMethod.POST)
-    public ResultVO train(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody PeopleSelectVO pVo) {
-        // 验证用户权限
-        return ResultVOUtil.success(peopleService.list(pVo));
     }
 
 }

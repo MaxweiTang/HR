@@ -5,9 +5,9 @@ package manage.model.VO;
  */
 public class AuthResultVO {
     private String token;
-    private String identity;
+    private Integer identity;
 
-    public AuthResultVO(String token, String identity) {
+    public AuthResultVO(String token, Integer identity) {
         this.token = token;
         this.identity = identity;
     }
@@ -20,11 +20,11 @@ public class AuthResultVO {
         this.token = token;
     }
 
-    public String getIdentity() {
+    public Integer getIdentity() {
         return this.identity;
     }
 
-    public void setIdentity(String identity) {
+    public void setIdentity(Integer identity) {
         this.identity = identity;
     }
 }

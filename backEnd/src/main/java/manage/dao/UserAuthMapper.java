@@ -11,6 +11,8 @@ public interface UserAuthMapper {
 
     UserAuth selectByPrimaryKey(String id);
 
+    UserAuth selectByStaffId(String staffId);
+
     int updateByPrimaryKeySelective(UserAuth record);
 
     int updateByPrimaryKey(UserAuth record);

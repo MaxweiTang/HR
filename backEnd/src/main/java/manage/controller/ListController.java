@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import manage.model.VO.AttendantSelectVO;
 import manage.model.VO.ContractSelectVO;
+import manage.model.VO.PeopleSelectVO;
 import manage.model.VO.ProfileSelectVO;
 import manage.model.VO.ResultVO;
+import manage.model.VO.StaffSelectVO;
 import manage.model.VO.TrainSelectVO;
 import manage.model.VO.UserInfoVO;
 import manage.service.ListService;
@@ -20,6 +22,13 @@ import manage.util.ResultVOUtil;
 public class ListController {
     @Autowired
     ListService listService;
+
+    // 员工信息
+    @RequestMapping(value = "/staff/list", method = RequestMethod.POST)
+    public ResultVO staff(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody StaffSelectVO sVo) {
+        // 验证操作用户权限
+        return ResultVOUtil.success(listService.staff(sVo));
+    }
 
     // 培训项目
     @RequestMapping(value = "/program/list", method = RequestMethod.GET)
@@ -60,5 +69,11 @@ public class ListController {
     public ResultVO attendant(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody AttendantSelectVO aVo) {
         // 验证权限
         return ResultVOUtil.success(listService.attendant(aVo));
+    }
+
+    @RequestMapping(value = "/people/list", method = RequestMethod.POST)
+    public ResultVO train(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody PeopleSelectVO pVo) {
+        // 验证用户权限
+        return ResultVOUtil.success(listService.people(pVo));
     }
 }

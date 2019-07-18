@@ -11,6 +11,46 @@ public class StaffNewVO {
 
     private String end;
 
+    private String profile_name;
+
+    private String contarct_content;
+
+    public String getContarct_content() {
+        return this.contarct_content;
+    }
+
+    public void setContarct_content(String contarct_content) {
+        this.contarct_content = contarct_content;
+    }
+
+    public String getProfile_name() {
+        return this.profile_name;
+    }
+
+    public void setProfile_name(String profile_name) {
+        this.profile_name = profile_name;
+    }
+
+    private String profile_abstract;
+
+    public String getProfile_abstract() {
+        return this.profile_abstract;
+    }
+
+    public void setProfile_abstract(String profile_abstract) {
+        this.profile_abstract = profile_abstract;
+    }
+
+    private String profile_remark;
+
+    public String getProfile_remark() {
+        return this.profile_remark;
+    }
+
+    public void setProfile_remark(String profile_remark) {
+        this.profile_remark = profile_remark;
+    }
+
     public void setPeople_id(String people_id) {
         this.people_id = people_id;
     }

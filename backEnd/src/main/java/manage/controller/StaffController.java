@@ -31,12 +31,6 @@ public class StaffController {
     @Autowired
     StaffService staffService;
 
-    @RequestMapping(value = "list", method = RequestMethod.GET)
-    public ResultVO list(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody StaffSelectVO sVo) {
-        // 验证操作用户权限
-        return ResultVOUtil.success(staffService.list(sVo));
-    }
-
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public ResultVO update(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody StaffInfoVO sInfoVO) {
         // 验证操作用户权限

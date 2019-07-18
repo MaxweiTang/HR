@@ -11,7 +11,6 @@ public class ValidationBackgroundFactory implements BackgroundFactory {
 	private Random random = new Random();
 
 
-	@Override
 	public void fillBackground(BufferedImage image) {
 		Graphics graphics = image.getGraphics();
 

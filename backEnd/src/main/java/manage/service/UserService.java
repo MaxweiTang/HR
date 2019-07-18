@@ -2,12 +2,10 @@ package manage.service;
 
 import java.util.List;
 
-import manage.base.BaseService;
 import manage.model.DTO.LoginDTO;
 import manage.model.VO.UserAuthVO;
-import manage.util.PageInfo;
 
-public interface UserService<T> extends BaseService<T> {
+public interface UserService {
 
 	// 验证用户身份
 	LoginDTO validateUser(UserAuthVO uVo);

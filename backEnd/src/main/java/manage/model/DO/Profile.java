@@ -5,7 +5,7 @@ public class Profile {
 
     private String name;
 
-    private String abstract;
+    private String abstracts;
 
     private String remark;
 
@@ -27,12 +27,12 @@ public class Profile {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getAbstract() {
-        return abstract;
+    public String getAbstracts() {
+        return abstracts;
     }
 
-    public void setAbstract(String abstract) {
-        this.abstract = abstract == null ? null : abstract.trim();
+    public void setAbstracts(String abstracts) {
+        this.abstracts = abstracts == null ? null : abstracts.trim();
     }
 
     public String getRemark() {

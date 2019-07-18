@@ -17,8 +17,6 @@ import manage.model.VO.StaffTransferVO;
  */
 public interface StaffService {
 
-    List<StaffListVO> list(StaffSelectVO sVo);
-
     boolean update(StaffInfoVO sVo);
 
     boolean delete(String staffId);
