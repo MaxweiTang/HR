@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * 职员管理的 Controller
  */
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+// @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("staff")
 public class StaffController {
 

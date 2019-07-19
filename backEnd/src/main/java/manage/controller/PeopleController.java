@@ -16,7 +16,7 @@ import manage.service.PeopleService;
 import manage.util.ResultVOUtil;
 
 @RequestMapping(value = "people")
-@CrossOrigin(origins = "*", maxAge = 3600)
+// @CrossOrigin(origins = "*", maxAge = 3600)
 public class PeopleController {
     @Autowired
     PeopleService peopleService;

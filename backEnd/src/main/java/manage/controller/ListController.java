@@ -20,7 +20,7 @@ import manage.service.ListService;
 import manage.util.ResultVOUtil;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+// @CrossOrigin(origins = "*", maxAge = 3600)
 public class ListController {
     @Autowired
     ListService listService;
