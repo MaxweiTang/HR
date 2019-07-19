@@ -19,6 +19,16 @@ public class ContractListVO {
 
     private String avatar;
 
+    private String content;
+
+    public String getContent() {
+        return this.content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public void setStaff_id(String staff_id) {
         this.staff_id = staff_id;
     }

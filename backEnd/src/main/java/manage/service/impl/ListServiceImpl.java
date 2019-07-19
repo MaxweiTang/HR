@@ -22,6 +22,7 @@ import manage.model.DO.Attendance;
 import manage.model.DO.Contract;
 import manage.model.DO.Department;
 import manage.model.DO.People;
+import manage.model.DO.PositionLog;
 import manage.model.DO.Profile;
 import manage.model.DO.Program;
 import manage.model.DO.Staff;
@@ -34,6 +35,8 @@ import manage.model.VO.ContractSelectVO;
 import manage.model.VO.DepartmentListVO;
 import manage.model.VO.PeopleListVO;
 import manage.model.VO.PeopleSelectVO;
+import manage.model.VO.PositionLogListVO;
+import manage.model.VO.PositionLogSelectVO;
 import manage.model.VO.ProfileListVO;
 import manage.model.VO.ProfileSelectVO;
 import manage.model.VO.StaffListVO;
@@ -304,7 +307,7 @@ public class ListServiceImpl implements ListService {
 
             return list;
         }
-        List<Staff> staffs = new ArrayList<Staff>();
+        List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
             Profile profile = profileMapper.selectByPrimaryKey(oldStaff.getProfileId());
             ProfileListVO profileListVO = new ProfileListVO();
@@ -339,70 +342,82 @@ public class ListServiceImpl implements ListService {
             if (oldStaff == null) {
                 return list;
             }
-            ContractListVO contractListVO = new ContractListVO();
 
+            String avatar;
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
             if (userAuth == null) {
-                contractListVO.setAvatar("");
+                avatar = "";
             } else {
-                contractListVO.setAvatar(userAuth.getAvatar());
+                avatar = userAuth.getAvatar();
             }
 
             People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
-            contractListVO.setName(oldPeople.getName());
 
-            Contract oldContract = contractMapper.selectByPrimaryKey(oldStaff.getContractId());
+            List<Contract> contracts = contractMapper.selectByPrimaryKey(oldStaff.getContractId());
 
-            Department oldDepartment = departmentMapper.selectByPrimaryKey(oldStaff.getDepartmentId());
-            contractListVO.setDepartment(oldDepartment.getName());
+            for (Contract oldContract : contracts) {
+                ContractListVO contractListVO = new ContractListVO();
 
-            try {
-                contractListVO.setStart(DateUtil.reverse(oldContract.getBegin()));
-                contractListVO.setEnd(DateUtil.reverse(oldContract.getEnd()));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return list;
+                contractListVO.setAvatar(avatar);
+                contractListVO.setName(oldPeople.getName());
+                contractListVO.setContent(oldContract.getContent());
+                Department oldDepartment = departmentMapper.selectByPrimaryKey(oldStaff.getDepartmentId());
+                contractListVO.setDepartment(oldDepartment.getName());
+
+                try {
+                    contractListVO.setStart(DateUtil.reverse(oldContract.getBegin()));
+                    contractListVO.setEnd(DateUtil.reverse(oldContract.getEnd()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return list;
+                }
+                contractListVO.setPostion(positionLogMapper.selectByPrimaryKey(oldStaff.getPositionId()).getTo());
+                contractListVO.setRemark(oldContract.getRemark());
+                contractListVO.setSex(oldPeople.getSex());
+                contractListVO.setStaff_id(oldStaff.getId());
+
+                list.add(contractListVO);
             }
-            contractListVO.setPostion(positionLogMapper.selectByPrimaryKey(oldStaff.getId()).getTo());
-            contractListVO.setRemark(oldContract.getRemark());
-            contractListVO.setSex(oldPeople.getSex());
-            contractListVO.setStaff_id(oldStaff.getId());
-
-            list.add(contractListVO);
 
             return list;
         }
-        List<Staff> staffs = new ArrayList<Staff>();
+        List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
-            Contract oldContract = contractMapper.selectByPrimaryKey(oldStaff.getProfileId());
-            ContractListVO contractListVO = new ContractListVO();
-
+            String avatar;
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
             if (userAuth == null) {
-                contractListVO.setAvatar("");
+                avatar = "";
             } else {
-                contractListVO.setAvatar(userAuth.getAvatar());
+                avatar = userAuth.getAvatar();
             }
 
             People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
-            contractListVO.setName(oldPeople.getName());
 
-            Department oldDepartment = departmentMapper.selectByPrimaryKey(oldStaff.getDepartmentId());
-            contractListVO.setDepartment(oldDepartment.getName());
+            List<Contract> contracts = contractMapper.selectByPrimaryKey(oldStaff.getContractId());
 
-            try {
-                contractListVO.setStart(DateUtil.reverse(oldContract.getBegin()));
-                contractListVO.setEnd(DateUtil.reverse(oldContract.getEnd()));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return list;
+            for (Contract oldContract : contracts) {
+                ContractListVO contractListVO = new ContractListVO();
+
+                contractListVO.setAvatar(avatar);
+                contractListVO.setName(oldPeople.getName());
+                contractListVO.setContent(oldContract.getContent());
+                Department oldDepartment = departmentMapper.selectByPrimaryKey(oldStaff.getDepartmentId());
+                contractListVO.setDepartment(oldDepartment.getName());
+
+                try {
+                    contractListVO.setStart(DateUtil.reverse(oldContract.getBegin()));
+                    contractListVO.setEnd(DateUtil.reverse(oldContract.getEnd()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return list;
+                }
+                contractListVO.setPostion(positionLogMapper.selectByPrimaryKey(oldStaff.getPositionId()).getTo());
+                contractListVO.setRemark(oldContract.getRemark());
+                contractListVO.setSex(oldPeople.getSex());
+                contractListVO.setStaff_id(oldStaff.getId());
+
+                list.add(contractListVO);
             }
-            contractListVO.setPostion(positionLogMapper.selectByPrimaryKey(oldStaff.getId()).getTo());
-            contractListVO.setRemark(oldContract.getRemark());
-            contractListVO.setSex(oldPeople.getSex());
-            contractListVO.setStaff_id(oldStaff.getId());
-
-            list.add(contractListVO);
 
         }
         return list;
@@ -453,7 +468,8 @@ public class ListServiceImpl implements ListService {
         for (Attendance oldAttendance : attendances) {
 
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldAttendance.getStaffId());
-            People oldPeople = peopleMapper.selectByPrimaryKey(oldAttendance.getStaffId());
+            People oldPeople = peopleMapper
+                    .selectByPrimaryKey(staffMapper.selectByPrimaryKey(oldAttendance.getStaffId()).getPid());
 
             AttendantListVO attendantListVO = new AttendantListVO();
 
@@ -475,6 +491,87 @@ public class ListServiceImpl implements ListService {
                 continue;
             }
             list.add(attendantListVO);
+        }
+        return list;
+    }
+
+    /**
+     * 职位记录
+     */
+    public List<PositionLogListVO> positionLog(PositionLogSelectVO aVo) {
+        List<PositionLogListVO> list = new ArrayList();
+        if (aVo.getStaff_id() != null && aVo.getStaff_id() != "") {
+            Staff oldStaff = staffMapper.selectByPrimaryKey(aVo.getStaff_id());
+            if (oldStaff == null) {
+                return list;
+            }
+
+            UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
+            People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
+
+            List<PositionLog> oldPositions = positionLogMapper.selectByStaffId(oldStaff.getId());
+
+            for (PositionLog a : oldPositions) {
+                PositionLogListVO positionLogListVO = new PositionLogListVO();
+
+                if (userAuth == null) {
+                    positionLogListVO.setAvatar("");
+                } else {
+                    positionLogListVO.setAvatar(userAuth.getAvatar());
+                }
+                positionLogListVO.setName(oldPeople.getName());
+
+                positionLogListVO.setSex(oldPeople.getSex());
+                positionLogListVO.setStaff_id(oldStaff.getId());
+
+                positionLogListVO.setFrom(a.getFrom());
+                positionLogListVO.setReason(a.getReason());
+                positionLogListVO.setTo(a.getTo());
+
+                try {
+                    positionLogListVO.setTime(DateUtil.reverse(a.getTime()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                list.add(positionLogListVO);
+            }
+
+            return list;
+        }
+        List<Staff> staffs = staffMapper.selectAll();
+        for (Staff oldStaff : staffs) {
+
+            UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
+            People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
+
+            List<PositionLog> oldPositions = positionLogMapper.selectByStaffId(oldStaff.getId());
+
+            for (PositionLog a : oldPositions) {
+                PositionLogListVO positionLogListVO = new PositionLogListVO();
+
+                if (userAuth == null) {
+                    positionLogListVO.setAvatar("");
+                } else {
+                    positionLogListVO.setAvatar(userAuth.getAvatar());
+                }
+                positionLogListVO.setName(oldPeople.getName());
+
+                positionLogListVO.setSex(oldPeople.getSex());
+                positionLogListVO.setStaff_id(oldStaff.getId());
+
+                positionLogListVO.setFrom(a.getFrom());
+                positionLogListVO.setReason(a.getReason());
+                positionLogListVO.setTo(a.getTo());
+
+                try {
+                    positionLogListVO.setTime(DateUtil.reverse(a.getTime()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                list.add(positionLogListVO);
+            }
         }
         return list;
     }

@@ -1,5 +1,7 @@
 package manage.dao;
 
+import java.util.List;
+
 import manage.model.DO.Contract;
 
 public interface ContractMapper {
@@ -9,7 +11,7 @@ public interface ContractMapper {
 
     int insertSelective(Contract record);
 
-    Contract selectByPrimaryKey(String id);
+    List<Contract> selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(Contract record);
 

@@ -1,5 +1,7 @@
 package manage.dao;
 
+import java.awt.List;
+
 import manage.model.DO.PositionLog;
 
 public interface PositionLogMapper {
@@ -8,6 +10,8 @@ public interface PositionLogMapper {
     int insert(PositionLog record);
 
     int insertSelective(PositionLog record);
+
+    java.util.List<PositionLog> selectByStaffId(String staffId);
 
     PositionLog selectByPrimaryKey(String id);
 

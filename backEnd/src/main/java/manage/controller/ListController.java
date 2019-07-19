@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import manage.model.VO.AttendantSelectVO;
 import manage.model.VO.ContractSelectVO;
 import manage.model.VO.PeopleSelectVO;
+import manage.model.VO.PositionLogSelectVO;
 import manage.model.VO.ProfileSelectVO;
 import manage.model.VO.ResultVO;
 import manage.model.VO.StaffSelectVO;
@@ -78,4 +79,11 @@ public class ListController {
         // 验证用户权限
         return ResultVOUtil.success(listService.people(pVo));
     }
+
+    @RequestMapping(value = "/position_log/list", method = RequestMethod.POST)
+    public ResultVO positionLog(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody PositionLogSelectVO pVo) {
+        // 验证用户权限
+        return ResultVOUtil.success(listService.positionLog(pVo));
+    }
+
 }

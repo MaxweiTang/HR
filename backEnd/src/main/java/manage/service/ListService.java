@@ -9,6 +9,8 @@ import manage.model.VO.ContractSelectVO;
 import manage.model.VO.DepartmentListVO;
 import manage.model.VO.PeopleListVO;
 import manage.model.VO.PeopleSelectVO;
+import manage.model.VO.PositionLogListVO;
+import manage.model.VO.PositionLogSelectVO;
 import manage.model.VO.ProfileListVO;
 import manage.model.VO.ProfileSelectVO;
 import manage.model.VO.StaffListVO;
@@ -54,4 +56,9 @@ public interface ListService {
      * 考勤
      */
     List<AttendantListVO> attendant(AttendantSelectVO aVo);
+
+     /**
+     * 职位记录
+     */
+    List<PositionLogListVO> positionLog(PositionLogSelectVO aVo);
 }
