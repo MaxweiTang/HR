@@ -7,14 +7,22 @@
           <div class="shelterContent">为您私人定制的管理系统</div>
         </div>
       </div>
-      <div class="img" id="imgs"></div>
+      <div class="imga" id="imgs" :style="{backgroundImage:'url(' + mainImg + ')'}"></div>
     </div>
     <div class="loginArea">
       <div class="login">
+        <div class="noticeArea">
+          <el-alert
+            :title="noticeContent"
+            type="error"
+            v-show="noticeShowFlag"
+            @close="noticeClose"
+          ></el-alert>
+        </div>
         <div class="title">管理员登陆</div>
         <el-form ref="form" :model="form" label-width="80px">
           <el-input v-model="form.name" placeholder="用户名"></el-input>
-          <el-input v-model="form.password" placeholder="密码"></el-input>
+          <el-input v-model="form.password" placeholder="密码" show-password></el-input>
           <div class="verCodeArae">
             <el-input v-model="form.verCode" placeholder="验证码" class="verCode"></el-input>
             <div class="imgArea">
@@ -30,7 +38,8 @@
 
 <script>
 import * as mChange from "matrixchange";
-import { setInterval } from "timers";
+import { setInterval, setTimeout } from "timers";
+import { constants } from "crypto";
 export default {
   name: "login",
   components: {},
@@ -39,20 +48,97 @@ export default {
       form: {
         name: "",
         password: "",
-        verCode: "",
-        interval: ''
+        verCode: ""
       },
-      mainAreaImgUrl: "https://s2.ax1x.com/2019/07/15/ZTFX5j.jpg"
+      mainImg: "https://s2.ax1x.com/2019/07/15/ZTFX5j.jpg",
+      mainAreaImgUrl: "",
+      captchaToken: "",
+      noticeShowFlag: false,
+      noticeContent: "错误提示"
     };
   },
   methods: {
+    noticeClose() {
+      this.noticeShowFlag = false;
+    },
     onSubmit() {
-      console.log(this.form);
-      clearInterval(this.interval); 
-      this.$router.push({ path: "/home" });
+      this.login(this.form);
+    },
+    getCaptcha(captchaToken) {
+      this.$axios
+        .get("/safety/captcha/" + captchaToken, { responseType: "arraybuffer" })
+        .then(response => {
+          var img =
+            "data:image/png;base64," +
+            btoa(
+              new Uint8Array(response.data).reduce(
+                (data, byte) => data + String.fromCharCode(byte),
+                ""
+              )
+            );
+          this.mainAreaImgUrl = img;
+        });
+    },
+    getToken() {
+      var that = this;
+      this.$axios.get("/safety/token").then(response => {
+        var resData = response.data;
+        if (resData.code == 0) {
+          var captchaToken = resData.data.token;
+          that.captchaToken = captchaToken;
+          that.getCaptcha(captchaToken);
+        }
+      });
+    },
+    login(form) {
+      var that = this;
+      // clearInterval(this.interval);
+      // this.$router.push({ path: "/home" });
+      if (!form.name) {
+        that.noticeShowFlag = true;
+        that.noticeContent = "请输入用户名";
+        return false;
+      } else if (!form.password) {
+        that.noticeShowFlag = true;
+        that.noticeContent = "请输入密码";
+        return false;
+      } else if (!form.verCode) {
+        that.noticeShowFlag = true;
+        that.noticeContent = "请输入验证码";
+        return false;
+      }
+      this.$axios({
+        method: "post",
+        url: "/safety/login",
+        data:{
+          username: form.name,
+          password: form.password,
+          captcha: form.verCode,
+          token: that.captchaToken
+        },
+        headers: { "Content-Type": "application/json" }
+      }).then(response => {
+        console.log(response);
+        var resData = response.data;
+        if (resData.code == 0) {
+          this.$store.commit(
+            "setUserMsg",
+            resData.data.token,
+            resData.data.token.identity
+          );
+          clearInterval(this.interval);
+          this.$router.push({ path: "/home" });
+        } else {
+          that.noticeShowFlag = true;
+          that.noticeContent = resData.msg;
+          that.getCaptcha(that.captchaToken);
+        }
+      });
     }
   },
   mounted() {
+    var that = this;
+    this.getToken();
     var app = document.getElementById("imgs");
     var urls = [
       "https://s2.ax1x.com/2019/07/15/ZTFX5j.jpg",
@@ -65,14 +151,17 @@ export default {
       row: 10,
       col: 10
     });
-    this.interval  = setInterval(function() {
-      move.movePoint(mChange.mode[1]);
+    setTimeout(() => {
+      that.mainImg = "";
+    }, 4800);
+    this.interval = setInterval(function() {
+      move.movePoint(mChange.mode[0]);
     }, 5000);
   }
 };
 </script>
 
-<style>
+<style scoped>
 html {
   height: 100%;
   width: 100%;
@@ -100,6 +189,9 @@ body {
   display: flex;
   align-items: center;
   position: relative;
+}
+.noticeArea {
+  width: 80%;
 }
 .login {
   width: 60%;
@@ -135,14 +227,22 @@ body {
   float: right;
   background-color: #fff;
   height: 5vh;
-  overflow: hidden;
 }
-.img {
+.imga {
   position: relative;
   padding-top: 100%;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+}
+.img {
+  /* position: relative;
+  padding-top: 100%; */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  height: 100%;
 }
 .shelter {
   position: absolute;

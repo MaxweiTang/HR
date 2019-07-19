@@ -8,9 +8,9 @@
         <el-header>
           <hrHeader />
         </el-header>
-        <el-main>      
+        <el-main>
           <router-view />
-          </el-main>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -28,7 +28,9 @@ export default {
   methods: {},
   components: {
     hrAside,
-    hrHeader,
+    hrHeader
+  },
+  mounted() {
   }
 };
 </script>
@@ -50,7 +52,6 @@ export default {
   background-color: #606266;
   color: #333;
   text-align: center;
-  
 }
 .el-container {
   width: 100%;
