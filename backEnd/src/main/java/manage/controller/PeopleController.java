@@ -1,6 +1,7 @@
 package manage.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import manage.service.PeopleService;
 import manage.util.ResultVOUtil;
 
 @RequestMapping(value = "people")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class PeopleController {
     @Autowired
     PeopleService peopleService;

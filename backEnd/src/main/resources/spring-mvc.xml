@@ -70,4 +70,8 @@
         </mvc:interceptor>
     </mvc:interceptors>
     
+    <mvc:cors>
+        <mvc:mapping path="/**" />
+    </mvc:cors>
+    
 </beans>

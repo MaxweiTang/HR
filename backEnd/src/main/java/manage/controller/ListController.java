@@ -1,6 +1,7 @@
 package manage.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import manage.service.ListService;
 import manage.util.ResultVOUtil;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class ListController {
     @Autowired
     ListService listService;
