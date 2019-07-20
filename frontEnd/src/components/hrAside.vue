@@ -18,14 +18,30 @@
           <i class="el-icon-location"></i>
           <span>人员档案</span>
         </template>
-        <el-menu-item index="1-1" @click="gotoFileManage">档案管理</el-menu-item>
-        <el-menu-item index="1-2">合同管理</el-menu-item>
+        <el-menu-item index="2-1" @click="gotoFileManage">档案管理</el-menu-item>
+        <el-menu-item index="2-2" @click="gotoContractManage">合同管理</el-menu-item>
       </el-submenu>
-      <el-menu-item index="3">
+      <el-submenu index="3">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span>部门管理</span>
+        </template>
+        <el-menu-item index="3-1" @click="gotoTransfere">人事调配</el-menu-item>
+        <el-menu-item index="3-2" @click="gotoAttendance">考勤管理</el-menu-item>
+      </el-submenu>
+      <el-submenu index="4">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span>教育培训</span>
+        </template>
+        <!-- <el-menu-item index="4-1" @click="gotoTrainProject">培训项目</el-menu-item> -->
+        <el-menu-item index="4-2" @click="gotoTrainRecord">培训记录</el-menu-item>
+      </el-submenu>
+      <el-menu-item index="5" @click="gotoRecruit">
         <i class="el-icon-document"></i>
-        <span slot="title">导航三</span>
+        <span slot="title">招聘记录</span>
       </el-menu-item>
-      <el-menu-item index="4" @click="gotoPersonal">
+      <el-menu-item index="6" @click="gotoPersonal">
         <i class="el-icon-setting"></i>
         <span slot="title">个人中心</span>
       </el-menu-item>
@@ -55,6 +71,21 @@ export default {
     },
     gotoFileManage() {
       this.$router.push({ path: "/fileManage" });
+    },
+    gotoContractManage() {
+      this.$router.push({ path: "/contractManage" });
+    },
+    gotoTransfere() {
+      this.$router.push({ path: "/transfer" });
+    },
+    gotoAttendance() {
+      this.$router.push({ path: "/attendance" });
+    },
+    gotoRecruit() {
+      this.$router.push({ path: "/recruit" });
+    },
+    gotoTrainRecord(){
+      this.$router.push({ path: "/trainingRecords" });
     }
   }
 };

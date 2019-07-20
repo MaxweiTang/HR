@@ -1,10 +1,7 @@
 <template>
   <div class="hrHeader">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ pageName }}</el-breadcrumb-item>
       <div class="userMsgArea">
         <div class="userAvatar">
           <div class="img" :style="{backgroundImage:'url(' + userAvatar + ')'}"></div>
@@ -21,13 +18,30 @@ export default {
   components: {},
   data() {
     return {
+      pageName: "",
       userAvatar: "https://s2.ax1x.com/2019/07/16/Z76h1U.jpg"
     };
   },
   methods: {
     logOut() {
       this.$router.push({ path: "/" });
+    },
+    routers() {
+      console.log(this.$router);
+    },
+    getBreadcrumb() {
+      let matched = this.$route.matched.filter(item => item.name);
+      const second = matched[1];
+      this.pageName = second.name;
     }
+  },
+  watch: {
+    $route() {
+      this.getBreadcrumb();
+    }
+  },
+  mounted() {
+    this.getBreadcrumb();
   }
 };
 </script>
@@ -49,9 +63,9 @@ export default {
   height: 8vh;
 }
 .userMsgArea > button {
-    color: #fff !important;
-    background-color: #606266 !important;
-    border: none !important;
+  color: #fff !important;
+  background-color: #606266 !important;
+  border: none !important;
 }
 .userAvatar {
   float: left;

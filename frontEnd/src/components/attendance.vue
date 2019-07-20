@@ -1,6 +1,6 @@
 <template>
-  <!-- 档案管理 -->
-  <div class="fileManage">
+  <!-- 考勤管理 -->
+  <div class="attendance">
     <div class="seachArea">
       <div class="iconArear">
         <i class="el-icon-search">筛选搜索</i>
@@ -11,23 +11,19 @@
       </div>
       <div class="conditionArea">
         <div class="seachItem">
-          档案编号：
+          时间：
+          <el-date-picker v-model="timeDate" type="date" placeholder="选择日期"></el-date-picker>
+        </div>
+        <div class="seachItem">
+          考勤编号：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
         <div class="seachItem">
-          档案编号：
+          员工编号：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
         <div class="seachItem">
-          档案编号：
-          <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
-        </div>
-        <div class="seachItem">
-          档案编号：
-          <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
-        </div>
-        <div class="seachItem">
-          档案编号：
+          员工姓名：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
       </div>
@@ -37,28 +33,22 @@
         <div class="dataIconArear">
           <i class="el-icon-document">数据列表</i>
         </div>
+        <div class="addButtom" @click="showAddDialog">添加</div>
       </div>
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
-          <el-table-column prop="id" label="人员Id"></el-table-column>
-          <el-table-column label="头像" width="100">
+          <el-table-column prop="staff_id" label="员工编号"></el-table-column>
+          <el-table-column width="100" label="员工照片">
             <template slot-scope="scope">
               <div
                 class="listAvatar"
-                :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + scope.row.people_id + '.jpg)'}"
+                :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + scope.row.avatar + '.jpg)'}"
               ></div>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="姓名"></el-table-column>
-          <el-table-column prop="sex" label="性别"></el-table-column>
-          <el-table-column prop="department" label="部门"></el-table-column>
-          <el-table-column prop="position" label="职务"></el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope" style="oveflow:hidden">
-              <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">详情</div>
-              <div class="buttomDelete" @click="handleDelete(scope.$index, scope.row)">删除</div>
-            </template>
-          </el-table-column>
+          <el-table-column prop="time" label="时间"></el-table-column>
+          <el-table-column prop="status" label="考勤情况"></el-table-column>
         </el-table>
       </div>
       <div class="bottomArea">
@@ -70,122 +60,102 @@
         ></el-pagination>
       </div>
     </div>
-    <el-dialog :title="personalInfo.name + '个人档案'" :visible.sync="dialogTableVisible" width="80%">
-      <table width="100%" class="infoTable" v-loading.lock="detailLoading">
-        <tr>
-          <td class="personAvatar" rowspan="2">
-            <div
-              class="listAvatar"
-              :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + personalInfo.people_id + '.jpg)'}"
-            ></div>
-          </td>
-          <td>员工编号：{{ personalInfo.id }}</td>
-          <td style="width:10vw;">
-            姓名
-            <el-input v-model="personalInfo.name" placeholder="姓名" :disabled="false"></el-input>
-          </td>
-          <td>性别：{{ personalInfo.sex }}</td>
-          <td>部门：{{ personalInfo.department }}</td>
-          <td>职务：{{ personalInfo.position }}</td>
-        </tr>
-        <tr>
-          <td>出生日期：{{ personalInfoHide.birth }}</td>
-          <td colspan="2">
-            电话号码：
-            <el-input v-model="personalInfo.tel" placeholder="电话号码" :disabled="false"></el-input>
-          </td>
-          <td>学历：{{ personalInfoHide.degree }}</td>
-          <td colspan="2">入职时间：{{ personalInfoHide.register_date }}</td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            邮箱地址：
-            <el-input v-model="personalInfo.email" placeholder="邮箱地址" :disabled="false"></el-input>
-          </td>
-          <td colspan="5">
-            备注：
-            <el-input
-              type="textarea"
-              :rows="2"
-              placeholder="请输入内容"
-              v-model="personalInfo.remark"
-              :disabled="false"
-            ></el-input>
-          </td>
-        </tr>
-      </table>
-      <div style="overflow: hidden;">
-        <div class="buttomOk" @click="saveContract(personalInfo)">保存</div>
+    <el-dialog title="考勤管理" :visible.sync="dialogTableVisible">
+      <div style="overflow: hidden">
+        <div class="transBlock">
+          <span class="demonstration">员工Id:</span>
+          <el-input v-model="attendan.staff_id" placeholder="员工Id"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">选择日期</span>
+          <el-date-picker
+            v-model="attendan.time"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">状态：</span>
+          <el-cascader v-model="attendan.status" :options="options"></el-cascader>
+        </div>
+      </div>
+      <div style="overflow: hidden">
+        <div class="buttomOk" @click="saveContract(attendan)">保存</div>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { constants } from 'crypto';
 export default {
-  name: "fileManage",
+  name: "attendance",
   components: {},
   data() {
     return {
       input: "",
       currpage: 1,
       dialogTableVisible: false,
+      transferVisble: false,
+      timeDate: "",
       tableData: [],
-      personalInfo: {},
-      personalInfoHide: {},
       token: "",
       loadingFlag: true,
-      detailLoading: true
+      attendan: {
+        staff_id: "",
+        time: "",
+        status: ""
+      },
+      options: [
+        {
+          label: "迟到",
+          value: "迟到"
+        },
+        {
+          label: "旷班",
+          value: "旷班"
+        },
+        {
+          label: "请假",
+          value: "请假"
+        },
+        {
+          label: "出差",
+          value: "出差"
+        },
+        {
+          label: "停职",
+          value: "停职"
+        },
+        {
+          label: "事假",
+          value: "事假"
+        }
+      ]
     };
   },
   methods: {
-    handleDelete(index, row) {
-      console.log(index, row);
-    },
-    handleDetail(index, row) {
-      var people_id = row.people_id;
-      this.personalInfo = row;
-      this.dialogTableVisible = true;
-      this.$axios({
-        method: "post",
-        url: "people/list",
-        data: { people_id: people_id },
-        headers: {
-          "Content-Type": "application/json",
-          token: this.token
-        }
-      }).then(response => {
-        var resData = response.data;
-        if (resData.code == 0) {
-          this.personalInfoHide = resData.data[0];
-          this.detailLoading = false;
-        } else {
-          this.$message({
-            showClose: true,
-            message: "服务器错误，请稍后重试",
-            type: "error"
-          });
-        }
-      });
-    },
     // 分页切换
     handleCurrentChange(cpage) {
       this.currpage = cpage;
     },
-    getAllUserMsg() {
+    handleDeleteDdata(index, row) {
+      console.log(index, row);
+    },
+    getAllAttendMsg() {
       this.$axios({
-        method: "post",
-        url: "/staff/list",
+        method: "POST",
+        url: "/attendant/list",
         data: { staff_id: "" },
         headers: {
-          "Content-Type": "application/json",
           token: this.token
         }
       }).then(response => {
+        console.log(response);
         var resData = response.data;
         if (resData.code == 0) {
-          this.tableData = resData.data;
+          this.tableData = resData.data.reverse();
           this.loadingFlag = false;
         } else {
           this.$message({
@@ -196,17 +166,19 @@ export default {
         }
       });
     },
-    // 修改
+    showAddDialog() {
+      this.dialogTableVisible = true;
+    },
     saveContract(item) {
+      console.log(item);
+      var attendan = this.attendan;
       this.$axios({
         method: "post",
-        url: "/staff/update",
+        url: "/staff/attendant",
         data: {
-          id: item.id,
-          name: item.name,
-          tel: item.tel,
-          email: item.email,
-          remark: item.remark
+          staff_id: attendan.staff_id,
+          time: attendan.time,
+          status: attendan.status[0]
         },
         headers: {
           "Content-Type": "application/json",
@@ -214,8 +186,9 @@ export default {
         }
       }).then(response => {
         var resData = response.data;
+        console.log(resData);
         if (resData.code == 0) {
-          this.getAllUserMsg();
+          this.getAllAttendMsg();
           this.$message({
             message: "修改成功",
             type: "success"
@@ -232,19 +205,19 @@ export default {
   },
   mounted() {
     this.token = this.$store.getters.getUserToken;
-    this.getAllUserMsg();
+    this.getAllAttendMsg();
   }
 };
 </script>
 
-<style>
-.fileManage {
+<style scoped>
+.attendance {
   width: 100%;
   height: 100%;
 }
 .seachArea {
   width: 100%;
-  height: 25vh;
+  height: 20vh;
   box-sizing: border-box;
   border: 1px solid #dcdfe6;
   position: relative;
@@ -285,7 +258,7 @@ export default {
 }
 .seachItem {
   float: left;
-  height: 5vh;
+  height: 8vh;
   margin: 1vw;
   width: 20%;
   background-color: #fff;
@@ -307,10 +280,30 @@ export default {
   height: 5vh;
   line-height: 5vh;
   margin: 1vh 0;
+  overflow: hidden;
 }
 .dataIconArear {
+  float: left;
+  width: 60%;
   margin-left: 0.5vw;
   height: 100%;
+}
+.addButtom {
+  float: right;
+  /* padding: 1vh; */
+  height: 4vh;
+  line-height: 4vh;
+  padding: 0 1vh;
+  font-size: 0.8vw;
+  background-color: rgba(252, 71, 71, 0.822);
+  color: #fff;
+  margin-right: 2vw;
+  border-radius: 10%;
+}
+.addButtom:hover {
+  color: #606266;
+  background-color: #dcdfe6;
+  cursor: pointer;
 }
 .dataLsitArea {
   width: 95%;
@@ -366,24 +359,22 @@ export default {
   margin-bottom: 0 !important;
   height: 100%;
 }
-.buttomOk {
-  box-sizing: border-box;
+.transBlock {
+  width: 95%;
+  margin: 1vh auto;
+}
+.demonstration {
+  margin-right: 1vw;
+}
+.seachItem > input {
+  height: 100%;
+}
+.transBlock {
   float: left;
-  text-align: center;
-  width: 5vw;
-  font-size: 1vw;
-  color: #fff;
-  background-color: #606266;
-  font-weight: bold;
-  padding: 1vh;
-  border-radius: 2vw;
+  width: 40%;
   margin: 1vh 2vw;
 }
-.buttomOk:hover {
-  box-sizing: border-box;
-  background-color: #fff;
-  color: #606266;
-  border: 1px solid #606266;
-  cursor: pointer;
+.demonstration {
+  margin-right: 1vw;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <!-- 档案管理 -->
-  <div class="fileManage">
-    <div class="seachArea">
+  <!-- 合同管理 -->
+  <div class="contractManage">
+    <div class="seachArea1">
       <div class="iconArear">
         <i class="el-icon-search">筛选搜索</i>
       </div>
@@ -11,23 +11,19 @@
       </div>
       <div class="conditionArea">
         <div class="seachItem">
-          档案编号：
+          合同编号：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
         <div class="seachItem">
-          档案编号：
+          员工编号：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
         <div class="seachItem">
-          档案编号：
+          部门：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
         <div class="seachItem">
-          档案编号：
-          <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
-        </div>
-        <div class="seachItem">
-          档案编号：
+          职务：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
       </div>
@@ -40,23 +36,25 @@
       </div>
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
-          <el-table-column prop="id" label="人员Id"></el-table-column>
+          <el-table-column prop="staff_id" label="员工编号"></el-table-column>
           <el-table-column label="头像" width="100">
             <template slot-scope="scope">
               <div
                 class="listAvatar"
-                :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + scope.row.people_id + '.jpg)'}"
+                :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + scope.row.avatar + '.jpg)'}"
               ></div>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="姓名"></el-table-column>
-          <el-table-column prop="sex" label="性别"></el-table-column>
           <el-table-column prop="department" label="部门"></el-table-column>
-          <el-table-column prop="position" label="职务"></el-table-column>
+          <el-table-column prop="postion" label="职务"></el-table-column>
+          <el-table-column prop="start" label="合同开始时间"></el-table-column>
+          <el-table-column prop="end" label="合同结束时间"></el-table-column>
+          <el-table-column prop="conremark" label="备注"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope" style="oveflow:hidden">
               <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">详情</div>
-              <div class="buttomDelete" @click="handleDelete(scope.$index, scope.row)">删除</div>
+              <!-- <div class="buttomDelete" @click="handleDelete(scope.$index, scope.row)">删除</div> -->
             </template>
           </el-table-column>
         </el-table>
@@ -65,78 +63,71 @@
         <el-pagination
           background
           layout="prev, pager, next, total, jumper"
-          :total="5"
+          :total="tableData.length"
           @current-change="handleCurrentChange"
         ></el-pagination>
       </div>
     </div>
-    <el-dialog :title="personalInfo.name + '个人档案'" :visible.sync="dialogTableVisible" width="80%">
-      <table width="100%" class="infoTable" v-loading.lock="detailLoading">
+
+    <el-dialog title="合同详情" :visible.sync="dialogTableVisible">
+      <table width="100%" class="infoTable">
         <tr>
           <td class="personAvatar" rowspan="2">
             <div
               class="listAvatar"
-              :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + personalInfo.people_id + '.jpg)'}"
+              :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + item.avatar + '.jpg)'}"
             ></div>
           </td>
-          <td>员工编号：{{ personalInfo.id }}</td>
-          <td style="width:10vw;">
-            姓名
-            <el-input v-model="personalInfo.name" placeholder="姓名" :disabled="false"></el-input>
+          <td>
+            员工编号：{{ item.staff_id }}
           </td>
-          <td>性别：{{ personalInfo.sex }}</td>
-          <td>部门：{{ personalInfo.department }}</td>
-          <td>职务：{{ personalInfo.position }}</td>
+          <td>姓名： {{ item.name }}</td>
+          <td>性别：{{ item.sex }}</td>
+          <td>
+            职务：
+            <el-input v-model="item.postion" placeholder="职务" :disabled="false"></el-input>
+          </td>
         </tr>
         <tr>
-          <td>出生日期：{{ personalInfoHide.birth }}</td>
-          <td colspan="2">
-            电话号码：
-            <el-input v-model="personalInfo.tel" placeholder="电话号码" :disabled="false"></el-input>
+          <td>
+            合同开始时间：
+            <el-input v-model="item.start" placeholder="合同开始时间" :disabled="false"></el-input>
           </td>
-          <td>学历：{{ personalInfoHide.degree }}</td>
-          <td colspan="2">入职时间：{{ personalInfoHide.register_date }}</td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            邮箱地址：
-            <el-input v-model="personalInfo.email" placeholder="邮箱地址" :disabled="false"></el-input>
+          <td>
+            合同结束时间：
+            <el-input v-model="item.end" placeholder="合同结束时间" :disabled="false"></el-input>
           </td>
-          <td colspan="5">
-            备注：
+          <td>
+            合同内容：
             <el-input
               type="textarea"
               :rows="2"
               placeholder="请输入内容"
-              v-model="personalInfo.remark"
+              v-model="item.content"
               :disabled="false"
             ></el-input>
           </td>
         </tr>
       </table>
       <div style="overflow: hidden;">
-        <div class="buttomOk" @click="saveContract(personalInfo)">保存</div>
+        <div class="buttomOk" @click="saveContract(item)">保存</div>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { constants } from 'crypto';
 export default {
-  name: "fileManage",
+  name: "contractManage",
   components: {},
   data() {
     return {
       input: "",
       currpage: 1,
       dialogTableVisible: false,
+      item: "",
       tableData: [],
-      personalInfo: {},
-      personalInfoHide: {},
-      token: "",
-      loadingFlag: true,
-      detailLoading: true
+      loadingFlag: true
     };
   },
   methods: {
@@ -144,39 +135,17 @@ export default {
       console.log(index, row);
     },
     handleDetail(index, row) {
-      var people_id = row.people_id;
-      this.personalInfo = row;
       this.dialogTableVisible = true;
-      this.$axios({
-        method: "post",
-        url: "people/list",
-        data: { people_id: people_id },
-        headers: {
-          "Content-Type": "application/json",
-          token: this.token
-        }
-      }).then(response => {
-        var resData = response.data;
-        if (resData.code == 0) {
-          this.personalInfoHide = resData.data[0];
-          this.detailLoading = false;
-        } else {
-          this.$message({
-            showClose: true,
-            message: "服务器错误，请稍后重试",
-            type: "error"
-          });
-        }
-      });
+      this.item = row;
     },
     // 分页切换
     handleCurrentChange(cpage) {
       this.currpage = cpage;
     },
-    getAllUserMsg() {
+    getAllContract() {
       this.$axios({
         method: "post",
-        url: "/staff/list",
+        url: "/contract/list",
         data: { staff_id: "" },
         headers: {
           "Content-Type": "application/json",
@@ -186,6 +155,7 @@ export default {
         var resData = response.data;
         if (resData.code == 0) {
           this.tableData = resData.data;
+          console.log(resData.data);
           this.loadingFlag = false;
         } else {
           this.$message({
@@ -196,17 +166,17 @@ export default {
         }
       });
     },
-    // 修改
+    // 保存
     saveContract(item) {
       this.$axios({
         method: "post",
-        url: "/staff/update",
+        url: "/staff/contract",
         data: {
-          id: item.id,
-          name: item.name,
-          tel: item.tel,
-          email: item.email,
-          remark: item.remark
+          staff_id: item.staff_id,
+          position: item.postion,
+          begin: item.start,
+          end: item.end,
+          content: item.content
         },
         headers: {
           "Content-Type": "application/json",
@@ -215,7 +185,7 @@ export default {
       }).then(response => {
         var resData = response.data;
         if (resData.code == 0) {
-          this.getAllUserMsg();
+          this.getAllContract();
           this.$message({
             message: "修改成功",
             type: "success"
@@ -232,19 +202,19 @@ export default {
   },
   mounted() {
     this.token = this.$store.getters.getUserToken;
-    this.getAllUserMsg();
+    this.getAllContract();
   }
 };
 </script>
 
-<style>
-.fileManage {
+<style scoped>
+.contractManage {
   width: 100%;
   height: 100%;
 }
-.seachArea {
+.seachArea1 {
   width: 100%;
-  height: 25vh;
+  height: 20vh;
   box-sizing: border-box;
   border: 1px solid #dcdfe6;
   position: relative;
@@ -356,6 +326,9 @@ export default {
   width: 6vw;
   height: 8vw;
 }
+.contentArea {
+  padding: 1vw;
+}
 .infoTable > tr > td {
   border: 1px solid #000;
 }
@@ -367,7 +340,7 @@ export default {
   height: 100%;
 }
 .buttomOk {
-  box-sizing: border-box;
+  box-sizing:border-box;
   float: left;
   text-align: center;
   width: 5vw;
@@ -380,7 +353,7 @@ export default {
   margin: 1vh 2vw;
 }
 .buttomOk:hover {
-  box-sizing: border-box;
+  box-sizing:border-box;
   background-color: #fff;
   color: #606266;
   border: 1px solid #606266;
