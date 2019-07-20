@@ -76,7 +76,7 @@ public class ListServiceImpl implements ListService {
         List<PeopleListVO> list = new ArrayList();
         if (pVo.getPeople_id() != null && pVo.getPeople_id() != "") {
             People oldPeople = peopleMapper.selectByPrimaryKey(pVo.getPeople_id());
-            if (oldPeople == null) {
+            if (oldPeople == null || oldPeople.getDeleted() == 1) {
                 return list;
             }
             PeopleListVO pListVO = new PeopleListVO();
@@ -102,6 +102,9 @@ public class ListServiceImpl implements ListService {
         }
         List<People> peoples = peopleMapper.selectAll();
         for (People oldPeople : peoples) {
+            if (oldPeople.getDeleted() == 1) {
+                continue;
+            }
             PeopleListVO pListVO = new PeopleListVO();
 
             pListVO.setId(oldPeople.getId());
@@ -129,7 +132,7 @@ public class ListServiceImpl implements ListService {
         List<StaffListVO> list = new ArrayList();
         if (sVo.getStaff_id() != null && sVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(sVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
             StaffListVO sListVO = new StaffListVO();
@@ -155,6 +158,10 @@ public class ListServiceImpl implements ListService {
         }
         List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
+
             StaffListVO sListVO = new StaffListVO();
 
             sListVO.setId(oldStaff.getId());
@@ -186,6 +193,9 @@ public class ListServiceImpl implements ListService {
         List<Program> programs = programMapper.selectAll();
         List<TrainProgramVO> trainProgramVOs = new ArrayList<TrainProgramVO>();
         for (Program program : programs) {
+            if (program.getDeleted() == 1) {
+                continue;
+            }
             TrainProgramVO trainProgramVO = new TrainProgramVO();
             trainProgramVO.setId(program.getId());
             trainProgramVO.setName(program.getName());
@@ -265,6 +275,9 @@ public class ListServiceImpl implements ListService {
         List<Department> departments = departmentMapper.selectAll();
         List<DepartmentListVO> departmentListVOs = new ArrayList<DepartmentListVO>();
         for (Department department : departments) {
+            if (department.getDeleted() == 1) {
+                continue;
+            }
             DepartmentListVO departmentListVO = new DepartmentListVO();
             departmentListVO.setId(department.getId());
             departmentListVO.setName(department.getName());
@@ -280,7 +293,7 @@ public class ListServiceImpl implements ListService {
         List<ProfileListVO> list = new ArrayList();
         if (pVo.getStaff_id() != null && pVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(pVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
             ProfileListVO profileListVO = new ProfileListVO();
@@ -309,6 +322,9 @@ public class ListServiceImpl implements ListService {
         }
         List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
             Profile profile = profileMapper.selectByPrimaryKey(oldStaff.getProfileId());
             ProfileListVO profileListVO = new ProfileListVO();
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
@@ -339,7 +355,7 @@ public class ListServiceImpl implements ListService {
         List<ContractListVO> list = new ArrayList();
         if (cVo.getStaff_id() != null && cVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(cVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
 
@@ -383,6 +399,9 @@ public class ListServiceImpl implements ListService {
         }
         List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
             String avatar;
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
             if (userAuth == null) {
@@ -430,7 +449,7 @@ public class ListServiceImpl implements ListService {
         List<AttendantListVO> list = new ArrayList();
         if (aVo.getStaff_id() != null && aVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(aVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
 
@@ -468,8 +487,11 @@ public class ListServiceImpl implements ListService {
         for (Attendance oldAttendance : attendances) {
 
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldAttendance.getStaffId());
-            People oldPeople = peopleMapper
-                    .selectByPrimaryKey(staffMapper.selectByPrimaryKey(oldAttendance.getStaffId()).getPid());
+            Staff oldStaff = staffMapper.selectByPrimaryKey(oldAttendance.getStaffId());
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
+            People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
 
             AttendantListVO attendantListVO = new AttendantListVO();
 
@@ -502,7 +524,7 @@ public class ListServiceImpl implements ListService {
         List<PositionLogListVO> list = new ArrayList();
         if (aVo.getStaff_id() != null && aVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(aVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
 
@@ -541,6 +563,9 @@ public class ListServiceImpl implements ListService {
         }
         List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
 
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
             People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());

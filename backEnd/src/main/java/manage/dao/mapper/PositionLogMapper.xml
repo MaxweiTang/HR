@@ -29,8 +29,8 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="manage.model.DO.PositionLog" >
-    insert into position_log (id, staff_id, from, 
-      to, time, reason)
+    insert into position_log (id, staff_id, `from`, 
+      `to`, `time`, reason)
     values (#{id,jdbcType=VARCHAR}, #{staffId,jdbcType=VARCHAR}, #{from,jdbcType=VARCHAR}, 
       #{to,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, #{reason,jdbcType=VARCHAR})
   </insert>
@@ -41,16 +41,16 @@
         id,
       </if>
       <if test="staffId != null" >
-        staff_id,
+        `staff_id`,
       </if>
       <if test="from != null" >
-        from,
+        `from`,
       </if>
       <if test="to != null" >
-        to,
+       `to`,
       </if>
       <if test="time != null" >
-        time,
+        `time`,
       </if>
       <if test="reason != null" >
         reason,
@@ -84,13 +84,13 @@
         staff_id = #{staffId,jdbcType=VARCHAR},
       </if>
       <if test="from != null" >
-        from = #{from,jdbcType=VARCHAR},
+        `from` = #{from,jdbcType=VARCHAR},
       </if>
       <if test="to != null" >
-        to = #{to,jdbcType=VARCHAR},
+        `to` = #{to,jdbcType=VARCHAR},
       </if>
       <if test="time != null" >
-        time = #{time,jdbcType=DATE},
+        `time` = #{time,jdbcType=DATE},
       </if>
       <if test="reason != null" >
         reason = #{reason,jdbcType=VARCHAR},
@@ -101,9 +101,9 @@
   <update id="updateByPrimaryKey" parameterType="manage.model.DO.PositionLog" >
     update position_log
     set staff_id = #{staffId,jdbcType=VARCHAR},
-      from = #{from,jdbcType=VARCHAR},
-      to = #{to,jdbcType=VARCHAR},
-      time = #{time,jdbcType=DATE},
+      `from` = #{from,jdbcType=VARCHAR},
+      `to` = #{to,jdbcType=VARCHAR},
+      `time` = #{time,jdbcType=DATE},
       reason = #{reason,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>

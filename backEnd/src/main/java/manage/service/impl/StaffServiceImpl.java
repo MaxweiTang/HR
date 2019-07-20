@@ -124,6 +124,8 @@ public class StaffServiceImpl implements StaffService {
         positionLog.setReason(sVo.getReason());
         positionLog.setStaffId(sVo.getStaff_id());
 
+        oldStaff.setPositionId(positionLog.getId());
+        staffMapper.updateByPrimaryKeySelective(oldStaff);
         positionLogMapper.insert(positionLog);
         return true;
     }
