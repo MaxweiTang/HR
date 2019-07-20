@@ -34,8 +34,8 @@
           <i class="el-icon-location"></i>
           <span>教育培训</span>
         </template>
-        <!-- <el-menu-item index="4-1" @click="gotoTrainProject">培训项目</el-menu-item>
-        <el-menu-item index="4-2" @click="gotoTrainRecord">培训记录</el-menu-item> -->
+        <!-- <el-menu-item index="4-1" @click="gotoTrainProject">培训项目</el-menu-item> -->
+        <el-menu-item index="4-2" @click="gotoTrainRecord">培训记录</el-menu-item>
       </el-submenu>
       <el-menu-item index="5" @click="gotoRecruit">
         <i class="el-icon-document"></i>
@@ -83,6 +83,9 @@ export default {
     },
     gotoRecruit() {
       this.$router.push({ path: "/recruit" });
+    },
+    gotoTrainRecord(){
+      this.$router.push({ path: "/trainingRecords" });
     }
   }
 };

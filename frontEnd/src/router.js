@@ -9,6 +9,7 @@ import contractManage from "./components/contractManage.vue";
 import transfer from "./components/transfer.vue";
 import attendance from "./components/attendance.vue";
 import recruit from "./components/recruit.vue";
+import trainingRecords from "./components/trainingRecords.vue";
 
 Vue.use(Router);
 
@@ -53,6 +54,11 @@ export default new Router({
         path: "/recruit",
         name: "招聘记录",
         component: recruit,
+      },
+      {
+        path: "/trainingRecords",
+        name: "培训记录",
+        component: trainingRecords,
       }
     ]
     }

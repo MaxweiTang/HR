@@ -40,7 +40,7 @@
       </div>
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
-          <el-table-column prop="people_id" label="人员Id"></el-table-column>
+          <el-table-column prop="id" label="人员Id"></el-table-column>
           <el-table-column label="头像" width="100">
             <template slot-scope="scope">
               <div
@@ -79,34 +79,50 @@
               :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + personalInfo.people_id + '.jpg)'}"
             ></div>
           </td>
-          <td>员工编号：{{ personalInfo.people_id }}</td>
-          <td>姓名： {{ personalInfo.name }}</td>
+          <td>员工编号：{{ personalInfo.id }}</td>
+          <td style="width:10vw;">
+            姓名
+            <el-input v-model="personalInfo.name" placeholder="姓名" :disabled="false"></el-input>
+          </td>
           <td>性别：{{ personalInfo.sex }}</td>
-          <td>
-            部门：
-            <el-input v-model="personalInfo.department" placeholder="部门" :disabled="true"></el-input>
-          </td>
-          <td>
-            职务：
-            <el-input v-model="personalInfo.position" placeholder="职务" :disabled="true"></el-input>
-          </td>
+          <td>部门：{{ personalInfo.department }}</td>
+          <td>职务：{{ personalInfo.position }}</td>
         </tr>
         <tr>
           <td>出生日期：{{ personalInfoHide.birth }}</td>
-          <td colspan="2">电话号码：{{ personalInfoHide.tel }}</td>
+          <td colspan="2">
+            电话号码：
+            <el-input v-model="personalInfo.tel" placeholder="电话号码" :disabled="false"></el-input>
+          </td>
           <td>学历：{{ personalInfoHide.degree }}</td>
           <td colspan="2">入职时间：{{ personalInfoHide.register_date }}</td>
         </tr>
         <tr>
-          <td colspan="2" style="height: 7vh;">邮箱地址：{{ personalInfoHide.email }}</td>
-          <td colspan="5">备注：{{ personalInfoHide.remark }}</td>
+          <td colspan="2">
+            邮箱地址：
+            <el-input v-model="personalInfo.email" placeholder="邮箱地址" :disabled="false"></el-input>
+          </td>
+          <td colspan="5">
+            备注：
+            <el-input
+              type="textarea"
+              :rows="2"
+              placeholder="请输入内容"
+              v-model="personalInfo.remark"
+              :disabled="false"
+            ></el-input>
+          </td>
         </tr>
       </table>
+      <div style="overflow: hidden;">
+        <div class="buttomOk" @click="saveContract(personalInfo)">保存</div>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { constants } from 'crypto';
 export default {
   name: "fileManage",
   components: {},
@@ -169,13 +185,45 @@ export default {
       }).then(response => {
         var resData = response.data;
         if (resData.code == 0) {
-          console.log(resData.data)
           this.tableData = resData.data;
           this.loadingFlag = false;
         } else {
           this.$message({
             showClose: true,
-            message: "服务器错误，请稍后重试",
+            message: resData.msg,
+            type: "error"
+          });
+        }
+      });
+    },
+    // 修改
+    saveContract(item) {
+      this.$axios({
+        method: "post",
+        url: "/staff/update",
+        data: {
+          id: item.id,
+          name: item.name,
+          tel: item.tel,
+          email: item.email,
+          remark: item.remark
+        },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        if (resData.code == 0) {
+          this.getAllUserMsg();
+          this.$message({
+            message: "修改成功",
+            type: "success"
+          });
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
             type: "error"
           });
         }
@@ -317,5 +365,25 @@ export default {
 .infoTable > tr > td > .el-input {
   margin-bottom: 0 !important;
   height: 100%;
+}
+.buttomOk {
+  box-sizing: border-box;
+  float: left;
+  text-align: center;
+  width: 5vw;
+  font-size: 1vw;
+  color: #fff;
+  background-color: #606266;
+  font-weight: bold;
+  padding: 1vh;
+  border-radius: 2vw;
+  margin: 1vh 2vw;
+}
+.buttomOk:hover {
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #606266;
+  border: 1px solid #606266;
+  cursor: pointer;
 }
 </style>

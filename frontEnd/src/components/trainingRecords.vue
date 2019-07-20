@@ -1,7 +1,7 @@
 <template>
-  <!-- 合同管理 -->
-  <div class="contractManage">
-    <div class="seachArea1">
+  <!-- 培训记录 -->
+  <div class="trainingRecords">
+    <div class="seachArea">
       <div class="iconArear">
         <i class="el-icon-search">筛选搜索</i>
       </div>
@@ -11,7 +11,7 @@
       </div>
       <div class="conditionArea">
         <div class="seachItem">
-          合同编号：
+          招聘编号：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
         <div class="seachItem">
@@ -19,16 +19,20 @@
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
         <div class="seachItem">
-          部门：
+          员工姓名：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
         <div class="seachItem">
-          职务：
+          部门/职位：
+          <el-cascader v-model="value" :options="options"></el-cascader>
+        </div>
+        <div class="seachItem">
+          招聘状态：
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
       </div>
     </div>
-    <div class="seachDataArea" v-loading.lock="loadingFlag">
+    <div class="seachDataArea" v-loading="false">
       <div class="dataTitle">
         <div class="dataIconArear">
           <i class="el-icon-document">数据列表</i>
@@ -36,8 +40,7 @@
       </div>
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
-          <el-table-column prop="staff_id" label="员工编号"></el-table-column>
-          <el-table-column label="头像" width="100">
+          <el-table-column label="员工照片" width="100">
             <template slot-scope="scope">
               <div
                 class="listAvatar"
@@ -45,138 +48,85 @@
               ></div>
             </template>
           </el-table-column>
+          <el-table-column prop="staff_id" label="员工编号"></el-table-column>
           <el-table-column prop="name" label="姓名"></el-table-column>
-          <el-table-column prop="department" label="部门"></el-table-column>
-          <el-table-column prop="postion" label="职务"></el-table-column>
-          <el-table-column prop="start" label="合同开始时间"></el-table-column>
-          <el-table-column prop="end" label="合同结束时间"></el-table-column>
-          <el-table-column prop="conremark" label="备注"></el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope" style="oveflow:hidden">
-              <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">详情</div>
-              <!-- <div class="buttomDelete" @click="handleDelete(scope.$index, scope.row)">删除</div> -->
-            </template>
-          </el-table-column>
+          <el-table-column prop="sex" label="性别"></el-table-column>
+          <el-table-column prop="program" label="培训科目"></el-table-column>
+          <el-table-column prop="result" label="培训成绩"></el-table-column>
         </el-table>
       </div>
       <div class="bottomArea">
         <el-pagination
           background
           layout="prev, pager, next, total, jumper"
-          :total="tableData.length"
+          :total="5"
           @current-change="handleCurrentChange"
         ></el-pagination>
       </div>
     </div>
-
-    <el-dialog title="合同详情" :visible.sync="dialogTableVisible">
-      <table width="100%" class="infoTable">
-        <tr>
-          <td class="personAvatar" rowspan="2">
-            <div
-              class="listAvatar"
-              :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + item.avatar + '.jpg)'}"
-            ></div>
-          </td>
-          <td>
-            员工编号：{{ item.staff_id }}
-          </td>
-          <td>姓名： {{ item.name }}</td>
-          <td>性别：{{ item.sex }}</td>
-          <td>
-            职务：
-            <el-input v-model="item.postion" placeholder="职务" :disabled="false"></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            合同开始时间：
-            <el-input v-model="item.start" placeholder="合同开始时间" :disabled="false"></el-input>
-          </td>
-          <td>
-            合同结束时间：
-            <el-input v-model="item.end" placeholder="合同结束时间" :disabled="false"></el-input>
-          </td>
-          <td>
-            合同内容：
-            <el-input
-              type="textarea"
-              :rows="2"
-              placeholder="请输入内容"
-              v-model="item.content"
-              :disabled="false"
-            ></el-input>
-          </td>
-        </tr>
-      </table>
-      <div style="overflow: hidden;">
-        <div class="buttomOk" @click="saveContract(item)">保存</div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
-  name: "contractManage",
+  name: "trainingRecords",
   components: {},
   data() {
     return {
       input: "",
       currpage: 1,
       dialogTableVisible: false,
-      item: "",
+      transferVisble: false,
+      timeDate: "",
       tableData: [],
-      loadingFlag: true
+      // 部门/职位
+      value: [],
+      options: [
+        {
+          label: "开发",
+          value: "开发",
+          children: [
+            {
+              label: "主管",
+              value: "主管"
+            },
+            {
+              label: "职员",
+              value: "职员"
+            }
+          ]
+        },
+        {
+          label: "营销",
+          value: "主管",
+          children: [
+            {
+              label: "主管",
+              value: "主管"
+            },
+            {
+              label: "职员",
+              value: "职员"
+            }
+          ]
+        }
+      ]
     };
   },
   methods: {
-    handleDelete(index, row) {
-      console.log(index, row);
-    },
-    handleDetail(index, row) {
-      this.dialogTableVisible = true;
-      this.item = row;
-    },
     // 分页切换
     handleCurrentChange(cpage) {
       this.currpage = cpage;
     },
-    getAllContract() {
-      this.$axios({
-        method: "post",
-        url: "/contract/list",
-        data: { staff_id: "" },
-        headers: {
-          "Content-Type": "application/json",
-          token: this.token
-        }
-      }).then(response => {
-        var resData = response.data;
-        if (resData.code == 0) {
-          this.tableData = resData.data;
-          console.log(resData.data);
-          this.loadingFlag = false;
-        } else {
-          this.$message({
-            showClose: true,
-            message: resData.msg,
-            type: "error"
-          });
-        }
-      });
+    handleDeleteDdata(index, row) {
+      console.log(index, row);
     },
-    // 保存
-    saveContract(item) {
+    getAllTrainList() {
       this.$axios({
         method: "post",
-        url: "/staff/contract",
+        url: "/train/list",
         data: {
-          staff_id: item.staff_id,
-          position: item.postion,
-          begin: item.start,
-          end: item.end,
-          content: item.content
+          staff_id: ""
         },
         headers: {
           "Content-Type": "application/json",
@@ -185,11 +135,7 @@ export default {
       }).then(response => {
         var resData = response.data;
         if (resData.code == 0) {
-          this.getAllContract();
-          this.$message({
-            message: "修改成功",
-            type: "success"
-          });
+          this.tableData = resData.data;
         } else {
           this.$message({
             showClose: true,
@@ -202,19 +148,19 @@ export default {
   },
   mounted() {
     this.token = this.$store.getters.getUserToken;
-    this.getAllContract();
+    this.getAllTrainList();
   }
 };
 </script>
 
 <style scoped>
-.contractManage {
+.trainingRecords {
   width: 100%;
   height: 100%;
 }
-.seachArea1 {
+.seachArea {
   width: 100%;
-  height: 20vh;
+  height: 25vh;
   box-sizing: border-box;
   border: 1px solid #dcdfe6;
   position: relative;
@@ -255,7 +201,6 @@ export default {
 }
 .seachItem {
   float: left;
-  height: 5vh;
   margin: 1vw;
   width: 20%;
   background-color: #fff;
@@ -326,9 +271,6 @@ export default {
   width: 6vw;
   height: 8vw;
 }
-.contentArea {
-  padding: 1vw;
-}
 .infoTable > tr > td {
   border: 1px solid #000;
 }
@@ -339,24 +281,14 @@ export default {
   margin-bottom: 0 !important;
   height: 100%;
 }
-.buttomOk {
-  box-sizing:border-box;
-  float: left;
-  text-align: center;
-  width: 5vw;
-  font-size: 1vw;
-  color: #fff;
-  background-color: #606266;
-  font-weight: bold;
-  padding: 1vh;
-  border-radius: 2vw;
-  margin: 1vh 2vw;
+.transBlock {
+  width: 95%;
+  margin: 1vh auto;
 }
-.buttomOk:hover {
-  box-sizing:border-box;
-  background-color: #fff;
-  color: #606266;
-  border: 1px solid #606266;
-  cursor: pointer;
+.demonstration {
+  margin-right: 1vw;
+}
+.seachItem > input {
+  height: 100%;
 }
 </style>

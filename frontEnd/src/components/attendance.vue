@@ -33,6 +33,7 @@
         <div class="dataIconArear">
           <i class="el-icon-document">数据列表</i>
         </div>
+        <div class="addButtom" @click="showAddDialog">添加</div>
       </div>
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
@@ -59,6 +60,31 @@
         ></el-pagination>
       </div>
     </div>
+    <el-dialog title="考勤管理" :visible.sync="dialogTableVisible">
+      <div style="overflow: hidden">
+        <div class="transBlock">
+          <span class="demonstration">员工Id:</span>
+          <el-input v-model="attendan.staff_id" placeholder="员工Id"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">选择日期</span>
+          <el-date-picker
+            v-model="attendan.time"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">状态：</span>
+          <el-cascader v-model="attendan.status" :options="options"></el-cascader>
+        </div>
+      </div>
+      <div style="overflow: hidden">
+        <div class="buttomOk" @click="saveContract(attendan)">保存</div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -75,7 +101,38 @@ export default {
       timeDate: "",
       tableData: [],
       token: "",
-      loadingFlag: true
+      loadingFlag: true,
+      attendan: {
+        staff_id: "",
+        time: "",
+        status: ""
+      },
+      options: [
+        {
+          label: "迟到",
+          value: "迟到"
+        },
+        {
+          label: "旷班",
+          value: "旷班"
+        },
+        {
+          label: "请假",
+          value: "请假"
+        },
+        {
+          label: "出差",
+          value: "出差"
+        },
+        {
+          label: "停职",
+          value: "停职"
+        },
+        {
+          label: "事假",
+          value: "事假"
+        }
+      ]
     };
   },
   methods: {
@@ -98,12 +155,48 @@ export default {
         console.log(response);
         var resData = response.data;
         if (resData.code == 0) {
-          this.tableData = resData.data;
+          this.tableData = resData.data.reverse();
           this.loadingFlag = false;
         } else {
           this.$message({
             showClose: true,
-            message: "服务器错误，请稍后重试",
+            message: resData.msg,
+            type: "error"
+          });
+        }
+      });
+    },
+    showAddDialog() {
+      this.dialogTableVisible = true;
+    },
+    saveContract(item) {
+      console.log(item);
+      var attendan = this.attendan;
+      this.$axios({
+        method: "post",
+        url: "/staff/attendant",
+        data: {
+          staff_id: attendan.staff_id,
+          time: attendan.time,
+          status: attendan.status[0]
+        },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        console.log(resData);
+        if (resData.code == 0) {
+          this.getAllAttendMsg();
+          this.$message({
+            message: "修改成功",
+            type: "success"
+          });
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
             type: "error"
           });
         }
@@ -187,10 +280,30 @@ export default {
   height: 5vh;
   line-height: 5vh;
   margin: 1vh 0;
+  overflow: hidden;
 }
 .dataIconArear {
+  float: left;
+  width: 60%;
   margin-left: 0.5vw;
   height: 100%;
+}
+.addButtom {
+  float: right;
+  /* padding: 1vh; */
+  height: 4vh;
+  line-height: 4vh;
+  padding: 0 1vh;
+  font-size: 0.8vw;
+  background-color: rgba(252, 71, 71, 0.822);
+  color: #fff;
+  margin-right: 2vw;
+  border-radius: 10%;
+}
+.addButtom:hover {
+  color: #606266;
+  background-color: #dcdfe6;
+  cursor: pointer;
 }
 .dataLsitArea {
   width: 95%;
@@ -255,5 +368,13 @@ export default {
 }
 .seachItem > input {
   height: 100%;
+}
+.transBlock {
+  float: left;
+  width: 40%;
+  margin: 1vh 2vw;
+}
+.demonstration {
+  margin-right: 1vw;
 }
 </style>

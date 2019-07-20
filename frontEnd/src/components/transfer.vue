@@ -39,7 +39,7 @@
                 <template slot-scope="scope">
                   <div
                     class="listAvatar"
-                :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + scope.row.avatar + '.jpg)'}"
+                    :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + scope.row.avatar + '.jpg)'}"
                   ></div>
                 </template>
               </el-table-column>
@@ -52,14 +52,14 @@
                 <template slot-scope="scope" style="oveflow:hidden">
                   <div class="buttomDelete" @click="handleDeleteDdata(scope.$index, scope.row)">删除</div>
                 </template>
-              </el-table-column> -->
+              </el-table-column>-->
             </el-table>
           </div>
           <div class="bottomArea">
             <el-pagination
               background
               layout="prev, pager, next, total, jumper"
-              :total="5"
+              :total="tableData.length"
               @current-change="handleCurrentChange"
             ></el-pagination>
           </div>
@@ -100,14 +100,16 @@
               <el-table-column prop="id" label="员工编号"></el-table-column>
               <el-table-column label="头像" width="100">
                 <template slot-scope="scope">
-                  <div class="listAvatar" :style="{backgroundImage:'url(' + scope.row.image + ')'}"></div>
+                  <div
+                    class="listAvatar"
+                    :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + scope.row.avatar + '.jpg)'}"
+                  ></div>
                 </template>
               </el-table-column>
               <el-table-column prop="name" label="姓名"></el-table-column>
               <el-table-column prop="sex" label="性别"></el-table-column>
               <el-table-column prop="department" label="部门"></el-table-column>
-              <el-table-column prop="duty" label="职务"></el-table-column>
-              <el-table-column prop="now" label="人员状态"></el-table-column>
+              <el-table-column prop="position" label="职务"></el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope" style="oveflow:hidden">
                   <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">详情</div>
@@ -128,13 +130,16 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-dialog title="员工1008611个人档案" :visible.sync="dialogTableVisible" width="80%">
-      <table width="100%" class="infoTable">
+    <el-dialog :title="personalInfo.name + '个人档案'" :visible.sync="dialogTableVisible" width="80%">
+      <table width="100%" class="infoTable" v-loading.lock="detailLoading">
         <tr>
           <td class="personAvatar" rowspan="2">
-            <div class="listAvatar" :style="{backgroundImage:'url(' + personalInfo.image + ')'}"></div>
+            <div
+              class="listAvatar"
+              :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + personalInfo.people_id + '.jpg)'}"
+            ></div>
           </td>
-          <td>员工编号：{{ personalInfo.id }}</td>
+          <td>员工编号：{{ personalInfo.people_id }}</td>
           <td>姓名： {{ personalInfo.name }}</td>
           <td>性别：{{ personalInfo.sex }}</td>
           <td>
@@ -143,37 +148,58 @@
           </td>
           <td>
             职务：
-            <el-input v-model="personalInfo.duty" placeholder="职务" :disabled="true"></el-input>
+            <el-input v-model="personalInfo.position" placeholder="职务" :disabled="true"></el-input>
           </td>
-          <td>人员状态：{{ personalInfo.now }}</td>
         </tr>
         <tr>
-          <td>出生日期：{{ personalInfo.birth }}</td>
-          <td colspan="2">电话号码：{{ personalInfo.tel }}</td>
-          <td>学历：{{ personalInfo.degree }}</td>
-          <td colspan="2">入职时间：{{ personalInfo.entrytime }}</td>
+          <td>出生日期：{{ personalInfoHide.birth }}</td>
+          <td colspan="2">电话号码：{{ personalInfoHide.tel }}</td>
+          <td>学历：{{ personalInfoHide.degree }}</td>
+          <td colspan="2">入职时间：{{ personalInfoHide.register_date }}</td>
         </tr>
         <tr>
-          <td colspan="2" style="height: 7vh;">邮箱地址：{{ personalInfo.email }}</td>
-          <td colspan="5">备注：{{ personalInfo.remark }}</td>
+          <td colspan="2" style="height: 7vh;">邮箱地址：{{ personalInfoHide.email }}</td>
+          <td colspan="5">备注：{{ personalInfoHide.remark }}</td>
         </tr>
       </table>
     </el-dialog>
-    <el-dialog title="员工1008611职务调动" :visible.sync="transferVisble">
+    <el-dialog
+      :title="translInfo.name + '职务调动'"
+      :visible.sync="transferVisble"
+      v-loading="loadingTransMsg"
+      element-loading-text="修改中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
+    >
       <table width="100%" class="infoTable">
         <tr>
           <td class="personAvatar" rowspan="2">
-            <div class="listAvatar" :style="{backgroundImage:'url(' + translInfo.image + ')'}"></div>
+            <div
+              class="listAvatar"
+              :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + translInfo.people_id + '.jpg)'}"
+            ></div>
           </td>
           <td>员工编号：{{ translInfo.id }}</td>
           <td>姓名： {{ translInfo.name }}</td>
           <td>现部门：{{ translInfo.department }}</td>
-          <td>现职务：{{ translInfo.duty }}</td>
+          <td>现职务：{{ translInfo.position }}</td>
         </tr>
       </table>
-      <div class="transBlock">
-        <span class="demonstration">调动至：</span>
-        <el-cascader v-model="value" :options="options"></el-cascader>
+      <div class="transMsg">*注：线上职务调动仅限部门内调动</div>
+      <div class="buttomArea1">
+        <div class="transBlock">
+          <span class="demonstration">调动至：</span>
+          <el-cascader v-model="value" :options="options"></el-cascader>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">申请时间：</span>
+          <el-input v-model="dataTime" placeholder="格式：2019-07-20"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration" style="oveflow:left;">调用原因：</span>
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"></el-input>
+        </div>
+        <div class="buttomOk" @click="handleTransfer(translInfo.id)">保存</div>
       </div>
     </el-dialog>
   </div>
@@ -189,79 +215,33 @@ export default {
       currpage: 1,
       dialogTableVisible: false,
       transferVisble: false,
+      detailLoading: true,
       // 调动记录
       tableData: [],
       personalInfo: "",
       translInfo: "",
       loadingFlag: true,
-      tableData1: [
-        {
-          id: 1008611,
-          image: "http://jiaowu.sicau.edu.cn/photo/201603966.jpg",
-          name: "张三",
-          sex: "男",
-          department: "开发部",
-          duty: "主管",
-          now: "在职"
-        },
-        {
-          id: 1008611,
-          image: "http://jiaowu.sicau.edu.cn/photo/201603993.jpg",
-          name: "张三",
-          sex: "男",
-          department: "开发部",
-          duty: "主管",
-          now: "在职"
-        },
-        {
-          id: 1008611,
-          image: "http://jiaowu.sicau.edu.cn/photo/201603993.jpg",
-          name: "张三",
-          sex: "男",
-          department: "开发部",
-          duty: "主管",
-          now: "在职"
-        },
-        {
-          id: 1008611,
-          image: "http://jiaowu.sicau.edu.cn/photo/201603993.jpg",
-          name: "张三",
-          sex: "男",
-          department: "开发部",
-          duty: "主管",
-          now: "在职"
-        }
-      ],
+      loadingTransMsg: false,
+      // 用户职位列表
+      tableData1: [],
       // 调动信息
       value: [],
+      personalInfo: {},
+      personalInfoHide: {},
+      textarea: "",
+      dataTime: "",
       options: [
         {
-          label: "开发",
-          value: "开发",
-          children: [
-            {
-              label: "主管",
-              value: "主管"
-            },
-            {
-              label: "职员",
-              value: "职员"
-            }
-          ]
+          label: "主管",
+          value: "主管"
         },
         {
-          label: "营销",
-          value: "主管",
-          children: [
-            {
-              label: "主管",
-              value: "主管"
-            },
-            {
-              label: "职员",
-              value: "职员"
-            }
-          ]
+          label: "职员",
+          value: "职员"
+        },
+        {
+          label: "打工仔",
+          value: "打工仔"
         }
       ]
     };
@@ -273,9 +253,30 @@ export default {
       this.transferVisble = true;
     },
     handleDetail(index, row) {
-      console.log(index, row);
+      var people_id = row.people_id;
       this.personalInfo = row;
       this.dialogTableVisible = true;
+      this.$axios({
+        method: "post",
+        url: "people/list",
+        data: { people_id: people_id },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        if (resData.code == 0) {
+          this.personalInfoHide = resData.data[0];
+          this.detailLoading = false;
+        } else {
+          this.$message({
+            showClose: true,
+            message: "服务器错误，请稍后重试",
+            type: "error"
+          });
+        }
+      });
     },
     // 分页切换
     handleCurrentChange(cpage) {
@@ -284,6 +285,7 @@ export default {
     handleDeleteDdata(index, row) {
       console.log(index, row);
     },
+    // 获取职位调配记录
     getPosition_log() {
       this.$axios({
         method: "post",
@@ -296,13 +298,75 @@ export default {
       }).then(response => {
         var resData = response.data;
         if (resData.code == 0) {
-          console.log(resData.data);
           this.tableData = resData.data;
           this.loadingFlag = false;
         } else {
           this.$message({
             showClose: true,
-            message: "服务器错误，请稍后重试",
+            message: resData.msg,
+            type: "error"
+          });
+        }
+      });
+    },
+    getAllUserMsg() {
+      this.$axios({
+        method: "post",
+        url: "/staff/list",
+        data: { staff_id: "" },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        if (resData.code == 0) {
+          this.tableData1 = resData.data;
+          this.loadingFlag = false;
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
+            type: "error"
+          });
+        }
+      });
+    },
+    // 调整职位
+    handleTransfer(id) {
+      this.loadingTransMsg = true;
+      var staff_id = id;
+      var time = this.dataTime;
+      var reason = this.textarea;
+      var to = this.value[0];
+      this.$axios({
+        method: "post",
+        url: "staff/transfer",
+        data: {
+          staff_id: staff_id,
+          to: to,
+          time: time,
+          reason: reason
+        },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        console.log(resData);
+        if (resData.code == 0) {
+          this.getAllUserMsg();
+          this.getPosition_log();
+          this.loadingTransMsg = false;
+          this.$message({
+            message: "修改成功",
+            type: "success"
+          });
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
             type: "error"
           });
         }
@@ -312,6 +376,7 @@ export default {
   mounted() {
     this.token = this.$store.getters.getUserToken;
     this.getPosition_log();
+    this.getAllUserMsg();
   }
 };
 </script>
@@ -445,11 +510,46 @@ export default {
   margin-bottom: 0 !important;
   height: 100%;
 }
+.transMsg {
+  width: 40%;
+  margin: 2vh 0;
+  font-size: 0.8vw;
+  color: red;
+}
+.buttomArea1 {
+  width: 100%;
+  overflow: hidden;
+}
 .transBlock {
-  width: 95%;
-  margin: 1vh auto;
+  float: left;
+  width: 40%;
+  margin: 1vh 2vw;
 }
 .demonstration {
   margin-right: 1vw;
+}
+.buttomOk {
+  float: left;
+  text-align: center;
+  width: 5vw;
+  font-size: 1vw;
+  color: #fff;
+  background-color: #606266;
+  font-weight: bold;
+  padding: 1vh;
+  border-radius: 2vw;
+  margin: 1vh 2vw;
+}
+.buttomOk:hover {
+  background-color: #fff;
+  color: #606266;
+  border: 1px solid #606266;
+  cursor: pointer;
+}
+.el-input {
+  width: 65%;
+}
+.el-textarea {
+  width: 65%;
 }
 </style>
