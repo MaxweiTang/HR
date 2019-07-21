@@ -184,7 +184,9 @@ public class StaffServiceImpl implements StaffService {
         // 新建 contract
         Contract contract = new Contract();
         contract.setId(RandomUtil.generate());
+
         try {
+            positionLog.setTime(DateUtil.parse(sVo.getTime()));
             contract.setBegin(DateUtil.parse(sVo.getTime()));
             contract.setEnd(DateUtil.parse(sVo.getEnd()));
         } catch (Exception e) {

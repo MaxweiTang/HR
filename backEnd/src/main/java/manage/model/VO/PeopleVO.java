@@ -13,6 +13,16 @@ public class PeopleVO {
 
     private String email;
 
+    private String degree;
+
+    public String getDegree() {
+        return this.degree;
+    }
+
+    public void setDegree(String degree) {
+        this.degree = degree;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
