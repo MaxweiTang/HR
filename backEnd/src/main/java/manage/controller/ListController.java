@@ -14,6 +14,7 @@ import manage.model.VO.PeopleSelectVO;
 import manage.model.VO.PositionLogSelectVO;
 import manage.model.VO.ProfileSelectVO;
 import manage.model.VO.ResultVO;
+import manage.model.VO.SalarySelectVO;
 import manage.model.VO.StaffSelectVO;
 import manage.model.VO.TrainSelectVO;
 import manage.model.VO.UserInfoVO;
@@ -84,6 +85,18 @@ public class ListController {
     public ResultVO positionLog(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody PositionLogSelectVO pVo) {
         // 验证用户权限
         return ResultVOUtil.success(listService.positionLog(pVo));
+    }
+
+    @RequestMapping(value = "/people/u-list", method = RequestMethod.GET)
+    public ResultVO peopleUList(@RequestAttribute("userid") UserInfoVO uVo) {
+        // 验证用户权限
+        return ResultVOUtil.success(listService.peopleUList());
+    }
+
+    @RequestMapping(value = "/salary/list", method = RequestMethod.POST)
+    public ResultVO salaryList(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody SalarySelectVO sVo) {
+        // 验证用户权限
+        return ResultVOUtil.success(listService.salary(sVo));
     }
 
 }

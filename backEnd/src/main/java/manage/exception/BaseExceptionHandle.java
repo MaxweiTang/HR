@@ -23,7 +23,7 @@ public class BaseExceptionHandle {
 	@ResponseBody
 	public ResultVO handleException(Exception e) {
 		logger.error(e.getMessage(), e);
-		return ResultVOUtil.retSysError();
+		return ResultVOUtil.retSysError(e.getMessage());
 	}
 
 	@ExceptionHandler(Throwable.class)

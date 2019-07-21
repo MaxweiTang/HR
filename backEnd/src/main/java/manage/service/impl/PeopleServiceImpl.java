@@ -20,15 +20,16 @@ public class PeopleServiceImpl implements PeopleService {
     @Autowired
     PeopleMapper peopleMapper;
 
-    public boolean newPeople(PeopleVO pVo) {
+    public boolean newPeople(PeopleVO pVo) throws Exception{
         People people = new People();
         BeanUtils.copyProperties(pVo, people);
         people.setId(RandomUtil.generate());
         try {
+            people.setBirth(DateUtil.parse(pVo.getBirth()));
             people.setRegisterDate(DateUtil.parse(pVo.getTime()));
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            throw new Exception("日期格式不正确，或为空");
         }
         peopleMapper.insertSelective(people);
         return true;
