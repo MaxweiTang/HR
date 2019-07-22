@@ -17,19 +17,18 @@ import com.github.bingoohuang.patchca.text.renderer.BestFitTextRenderer;
 import com.github.bingoohuang.patchca.text.renderer.TextRenderer;
 import com.github.bingoohuang.patchca.word.RandomWordFactory;
 
-
 /**
  * @description : 图片验证码生产实现类
  */
-public class ValidationGenerator{
+public class ValidationGenerator {
 	private ConfigurableCaptchaService configurableCaptchaService = null;
 	private ColorFactory colorFactory = null;
 	private RandomFontFactory fontFactory = null;
 	private RandomWordFactory wordFactory = null;
 	private TextRenderer textRenderer = null;
-	private Captcha captcha=null;
+	private Captcha captcha = null;
 
-	public ValidationGenerator(){
+	public ValidationGenerator() {
 		init();
 	}
 
@@ -48,7 +47,8 @@ public class ValidationGenerator{
 
 		// 随机字符生成器,去除掉容易混淆的字母和数字,如o和0等
 		wordFactory = new RandomWordFactory();
-		wordFactory.setCharacters("abcdefghkmnpqstwxyz23456789ABCDEFGHKMNPQSTWXYZ");
+		wordFactory.setCharacters("abcdefghijklmnoprst");
+
 		wordFactory.setMaxLength(5);
 		wordFactory.setMinLength(4);
 		configurableCaptchaService.setWordFactory(wordFactory);
@@ -77,7 +77,7 @@ public class ValidationGenerator{
 		configurableCaptchaService.setTextRenderer(textRenderer);
 
 		// 验证码图片的大小
-		configurableCaptchaService.setWidth(82);
+		configurableCaptchaService.setWidth(102);
 		configurableCaptchaService.setHeight(32);
 
 		//
@@ -86,14 +86,14 @@ public class ValidationGenerator{
 	}
 
 	public String getValidationCode() {
-		if (captcha!=null){
+		if (captcha != null) {
 			return captcha.getChallenge();
 		}
 		return null;
 	}
 
-	public BufferedImage getBufferedImage(){
-		if (captcha!=null){
+	public BufferedImage getBufferedImage() {
+		if (captcha != null) {
 			return captcha.getImage();
 		}
 		return null;
@@ -105,7 +105,7 @@ public class ValidationGenerator{
 		fontFactory = null;
 		textRenderer = null;
 		configurableCaptchaService = null;
-		captcha=null;
+		captcha = null;
 	}
 
 }

@@ -65,6 +65,7 @@ public class StaffServiceImpl implements StaffService {
         Profile profile = profileMapper.selectByPrimaryKey(staff.getProfileId());
         profile.setAbstracts(profile.getAbstracts() + "\n" + sVo.getAbstracts());
         profile.setRemark(profile.getRemark() + "\n" + sVo.getRemark());
+        profileMapper.updateByPrimaryKeySelective(profile);
         return true;
     }
 
@@ -97,6 +98,7 @@ public class StaffServiceImpl implements StaffService {
         }
         contract.setPositionId(newPosition.getId());
         contract.setContent(sVo.getContent());
+        newStaff.setContractId(contract.getId());
 
         staffMapper.updateByPrimaryKeySelective(newStaff);
         positionLogMapper.insert(newPosition);
