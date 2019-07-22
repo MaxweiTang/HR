@@ -1,7 +1,7 @@
 <template>
   <!-- 招聘记录 -->
   <div class="recruit">
-    <div class="seachArea">
+    <!-- <div class="seachArea">
       <div class="iconArear">
         <i class="el-icon-search">筛选搜索</i>
       </div>
@@ -31,29 +31,29 @@
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="seachDataArea" v-loading="false">
       <div class="dataTitle">
         <div class="dataIconArear">
           <i class="el-icon-document">数据列表</i>
         </div>
+        <div class="addButtom" @click="showAddDialog" v-show="identity">添加</div>
       </div>
       <div class="dataLsitArea">
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table :data="tableData" style="width: 100%">
           <el-table-column prop="id" label="招聘编号"></el-table-column>
-          <el-table-column prop="applyid" label="员工编号"></el-table-column>
-          <el-table-column label="员工照片" width="100">
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column prop="sex" label="性别"></el-table-column>
+          <el-table-column prop="degree" label="第一学历"></el-table-column>
+          <el-table-column prop="birth" label="出生日期"></el-table-column>
+          <el-table-column prop="tel" label="电话"></el-table-column>
+          <el-table-column prop="register_date" label="应聘日期"></el-table-column>
+          <el-table-column prop="remark" label="备注"></el-table-column>
+          <el-table-column label="操作" v-if="identity">
             <template slot-scope="scope">
-              <div class="listAvatar" :style="{backgroundImage:'url(' + scope.row.avatar + ')'}"></div>
+              <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">录用</div>
             </template>
           </el-table-column>
-          <el-table-column prop="applyname" label="姓名"></el-table-column>
-          <el-table-column prop="applytel" label="联系方式"></el-table-column>
-          <el-table-column prop="degree" label="部门"></el-table-column>
-          <el-table-column prop="duty" label="职位"></el-table-column>
-          <el-table-column prop="entrytime" label="签约时间"></el-table-column>
-          <el-table-column prop="now" label="状态"></el-table-column>
-          <el-table-column prop="remark" label="备注"></el-table-column>
         </el-table>
       </div>
       <div class="bottomArea">
@@ -65,6 +65,129 @@
         ></el-pagination>
       </div>
     </div>
+
+    <el-dialog title="登记应聘者" :visible.sync="dialogTableVisible" width="40%">
+      <div style="overflow: hidden;width:60%;margin: 0 auto;">
+        <div class="transBlock">
+          <span class="demonstration">应聘者姓名:</span>
+          <el-input v-model="attendan.name" placeholder="应聘者姓名"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">登记时间：</span>
+          <el-date-picker
+            v-model="attendan.time"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">性别：</span>
+          <el-select v-model="attendan.sex" placeholder="请选择">
+            <el-option
+              v-for="item in optionSsex"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">出生日期:</span>
+          <el-date-picker
+            v-model="attendan.birth"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">电话:</span>
+          <el-input v-model="attendan.tel" placeholder="电话"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">第一学历:</span>
+          <el-input v-model="attendan.degree" placeholder="第一学历"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">邮箱地址:</span>
+          <el-input v-model="attendan.email" placeholder="邮箱地址"></el-input>
+        </div>
+        <div class="buttomOk" @click="handleTransfer">保存</div>
+      </div>
+    </el-dialog>
+    <el-dialog title="录用" :visible.sync="addContractFlag" width="40%">
+      <div style="overflow: hidden;width:60%;margin: 0 auto;">
+        <div class="transBlock">
+          <span class="demonstration">应聘者Id：</span>
+          <el-input v-model="attendan1.people_id" placeholder="应聘者Id" disabled></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">部门：</span>
+          <el-select v-model="attendan1.department_id" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">职务:</span>
+          <el-input v-model="attendan1.position" placeholder="职务"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">档案名称:</span>
+          <el-input v-model="attendan1.profile_name" placeholder="档案名称"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">档案概述:</span>
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="档案概述"
+            v-model="attendan1.profile_abstract"
+          ></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">档案备注:</span>
+          <el-input v-model="attendan1.profile_remark" placeholder="档案备注"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">合同起始日期：</span>
+          <el-date-picker
+            v-model="attendan1.time"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">合同终止日期：</span>
+          <el-date-picker
+            v-model="attendan1.end"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">合同内容:</span>
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="合同内容"
+            v-model="attendan1.contarct_content"
+          ></el-input>
+        </div>
+        <div class="buttomOk" @click="handleTransfer1">保存</div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -79,24 +202,22 @@ export default {
       dialogTableVisible: false,
       transferVisble: false,
       timeDate: "",
-      tableData: [
+      tableData: [],
+      // 部门/职位
+      optionSsex: [
         {
-          id: 1000,
-          applyid: 1008611,
-          applyname: "张三",
-          applytel: "13300000021",
-          avatar: "http://jiaowu.sicau.edu.cn/photo/201603993.jpg",
-          degree: "本科",
-          department: "开发",
-          duty: "主管",
-          entrytime: "2019-07-15",
-          applystate:"签约完成",
-          now: "在职",
-          remark: ""
+          name: "男",
+          id: "男"
+        },
+        {
+          name: "女",
+          id: "女"
+        },
+        {
+          name: "其他",
+          id: "其他"
         }
       ],
-      // 部门/职位
-      value: [],
       options: [
         {
           label: "开发",
@@ -126,7 +247,31 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      attendan: {
+        name: "",
+        time: "",
+        birth: "",
+        tel: "",
+        degree: "",
+        sex: "",
+        email: ""
+      },
+      attendan1: {
+        people_id: "",
+        department_id: "",
+        time: "",
+        position: "",
+        end: "",
+        contarct_content: "",
+        profile_name: "",
+        profile_abstract: "",
+        profiel_remark: ""
+      },
+      token: "",
+      addContractFlag: false,
+      item: "",
+      identity: ""
     };
   },
   methods: {
@@ -136,7 +281,197 @@ export default {
     },
     handleDeleteDdata(index, row) {
       console.log(index, row);
+    },
+    showAddDialog() {
+      this.dialogTableVisible = true;
+    },
+    handleDetail(index, row) {
+      this.attendan1.people_id = row.id;
+      this.item = row;
+      this.addContractFlag = true;
+    },
+    handleTransfer() {
+      var attendan = this.attendan;
+      this.$axios({
+        method: "post",
+        url: "/people/new",
+        data: {
+          name: attendan.name,
+          time: attendan.time,
+          birth: attendan.birth,
+          tel: attendan.tel,
+          degree: attendan.degree,
+          sex: attendan.sex,
+          email: attendan.email
+        },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        console.log(resData);
+        if (resData.code == 0) {
+          this.getAllUlist();
+          this.attendan = {
+            name: "",
+            time: "",
+            birth: "",
+            tel: "",
+            degree: "",
+            sex: "",
+            email: ""
+          };
+          this.$message({
+            message: "添加成功",
+            type: "success"
+          });
+          this.dialogTableVisible = false;
+        } else {
+          this.attendan = {
+            name: "",
+            time: "",
+            birth: "",
+            tel: "",
+            degree: "",
+            sex: "",
+            email: ""
+          };
+          this.$message({
+            showClose: true,
+            message: resData.msg,
+            type: "error"
+          });
+          this.dialogTableVisible = false;
+        }
+      });
+    },
+    // 获取所有应聘人员
+    getAllUlist() {
+      this.$axios({
+        method: "get",
+        url: "/people/u-list",
+        headers: {
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        console.log(resData);
+        if (resData.code == 0) {
+          this.tableData = resData.data;
+          this.loadingFlag = false;
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
+            type: "error"
+          });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
+        }
+      });
+    },
+    getAllDep() {
+      this.$axios({
+        method: "get",
+        url: "/department/list",
+        data: {
+          staff_id: ""
+        },
+        headers: {
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        if (resData.code == 0) {
+          this.options = resData.data;
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
+            type: "error"
+          });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
+        }
+      });
+    },
+    handleTransfer1() {
+      var attendan1 = this.attendan1;
+      this.$axios({
+        method: "post",
+        url: "/staff/new",
+        data: {
+          people_id: attendan1.people_id,
+          department_id: attendan1.department_id,
+          time: attendan1.time,
+          position: attendan1.position,
+          end: attendan1.end,
+          contarct_content: attendan1.contarct_content,
+          profile_name: attendan1.profile_name,
+          profile_abstract: attendan1.profile_abstract,
+          profiel_remark: attendan1.profiel_remark
+        },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        console.log(response);
+        var resData = response.data;
+        if (resData.code == 0) {
+          this.getAllUlist();
+          (this.attendan1 = {
+            people_id: "",
+            department_id: "",
+            time: "",
+            position: "",
+            end: "",
+            contarct_content: "",
+            profile_name: "",
+            profile_abstract: "",
+            profiel_remark: ""
+          }),
+            this.$message({
+              message: "添加成功",
+              type: "success"
+            });
+        } else {
+          (this.attendan1 = {
+            people_id: "",
+            department_id: "",
+            time: "",
+            position: "",
+            end: "",
+            contarct_content: "",
+            profile_name: "",
+            profile_abstract: "",
+            profiel_remark: ""
+          }),
+            this.$message({
+              showClose: true,
+              message: resData.msg,
+              type: "error"
+            });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
+        }
+      });
     }
+  },
+  mounted() {
+    this.token = this.$store.getters.getUserToken;
+    var identity = this.$store.getters.getIdentity;
+    if (identity) {
+      this.identity = true;
+    } else {
+      this.identity = false;
+    }
+    this.getAllUlist();
+    this.getAllDep();
   }
 };
 </script>
@@ -210,8 +545,11 @@ export default {
   height: 5vh;
   line-height: 5vh;
   margin: 1vh 0;
+  overflow: hidden;
 }
 .dataIconArear {
+  float: left;
+  width: 60%;
   margin-left: 0.5vw;
   height: 100%;
 }
@@ -278,5 +616,26 @@ export default {
 }
 .seachItem > input {
   height: 100%;
+}
+.addButtom {
+  float: right;
+  /* padding: 1vh; */
+  height: 4vh;
+  line-height: 4vh;
+  padding: 0 1vh;
+  font-size: 0.8vw;
+  background-color: rgba(252, 71, 71, 0.822);
+  color: #fff;
+  margin-right: 2vw;
+  border-radius: 10%;
+}
+.addButtom:hover {
+  color: #606266;
+  background-color: #dcdfe6;
+  cursor: pointer;
+}
+.demonstration {
+  float: left;
+  margin: 0.5vw 0;
 }
 </style>

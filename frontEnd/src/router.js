@@ -10,10 +10,12 @@ import transfer from "./components/transfer.vue";
 import attendance from "./components/attendance.vue";
 import recruit from "./components/recruit.vue";
 import trainingRecords from "./components/trainingRecords.vue";
+import file2Manage from "./components/file2Manage.vue";
 
 Vue.use(Router);
 
 export default new Router({
+  mode: 'hash',
   routes: [
     {
       path: "/",
@@ -27,7 +29,7 @@ export default new Router({
       redirect: '/index',
       children: [{
         path: "/personal",
-        name: "personal",
+        name: "薪资数据",
         component: personal,
       },{
         path: "/index",
@@ -35,7 +37,7 @@ export default new Router({
         component: index,
       },{
         path: "/fileManage",
-        name: "档案管理",
+        name: "人员信息管理",
         component: fileManage,
       },{
         path: "/contractManage",
@@ -59,6 +61,11 @@ export default new Router({
         path: "/trainingRecords",
         name: "培训记录",
         component: trainingRecords,
+      },
+      {
+        path: "/file2Manage",
+        name: "档案管理",
+        component: file2Manage,
       }
     ]
     }

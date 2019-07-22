@@ -92,8 +92,6 @@ export default {
     },
     login(form) {
       var that = this;
-      // clearInterval(this.interval);
-      // this.$router.push({ path: "/home" });
       if (!form.name) {
         that.noticeShowFlag = true;
         that.noticeContent = "请输入用户名";
@@ -118,16 +116,12 @@ export default {
         },
         headers: { "Content-Type": "application/json" }
       }).then(response => {
-        console.log(response);
         var resData = response.data;
         if (resData.code == 0) {
-          this.$store.commit(
-            "setUserMsg",
-            resData.data.token,
-            resData.data.token.identity
-          );
+          this.$store.commit("setUserMsg", resData.data.token);
+          this.$store.commit("setIdentity", resData.data.identity);
           clearInterval(this.interval);
-          this.$router.push({ path: "/home" });
+          this.$router.push({ path: "/fileManage" });
         } else {
           that.noticeShowFlag = true;
           that.noticeContent = resData.msg;

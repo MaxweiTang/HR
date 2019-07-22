@@ -9,16 +9,18 @@ export default new Vuex.Store({
     identity: ''
   },
   mutations: {
-    setUserMsg(state,userToken,identity){
+    setUserMsg(state, userToken) {
       state.userToken = userToken;
+    },
+    setIdentity(state, identity) {
       state.identity = identity;
     }
   },
-  getters:{
+  getters: {
     getUserToken(state) {
       return state.userToken;
     },
-    getIdentity(state){
+    getIdentity(state) {
       return state.identity;
     }
   }

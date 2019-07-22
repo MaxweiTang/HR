@@ -1,7 +1,7 @@
 <template>
   <!-- 合同管理 -->
   <div class="contractManage">
-    <div class="seachArea1">
+    <!-- <div class="seachArea1">
       <div class="iconArear">
         <i class="el-icon-search">筛选搜索</i>
       </div>
@@ -27,12 +27,13 @@
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="seachDataArea" v-loading.lock="loadingFlag">
       <div class="dataTitle">
         <div class="dataIconArear">
           <i class="el-icon-document">数据列表</i>
         </div>
+        <!-- <div class="addButtom" @click="showAddDialog">添加</div> -->
       </div>
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
@@ -53,7 +54,7 @@
           <el-table-column prop="conremark" label="备注"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope" style="oveflow:hidden">
-              <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">详情</div>
+              <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">新增合同</div>
               <!-- <div class="buttomDelete" @click="handleDelete(scope.$index, scope.row)">删除</div> -->
             </template>
           </el-table-column>
@@ -78,24 +79,22 @@
               :style="{backgroundImage:'url(http://jiaowu.sicau.edu.cn/photo/' + item.avatar + '.jpg)'}"
             ></div>
           </td>
-          <td>
-            员工编号：{{ item.staff_id }}
-          </td>
+          <td>员工编号：{{ item.staff_id }}</td>
           <td>姓名： {{ item.name }}</td>
           <td>性别：{{ item.sex }}</td>
           <td>
             职务：
-            <el-input v-model="item.postion" placeholder="职务" :disabled="false"></el-input>
+            <el-input v-model="item.postion" placeholder="职务" :disabled="!identity"></el-input>
           </td>
         </tr>
         <tr>
           <td>
             合同开始时间：
-            <el-input v-model="item.start" placeholder="合同开始时间" :disabled="false"></el-input>
+            <el-input v-model="item.start" placeholder="合同开始时间" :disabled="!identity"></el-input>
           </td>
           <td>
             合同结束时间：
-            <el-input v-model="item.end" placeholder="合同结束时间" :disabled="false"></el-input>
+            <el-input v-model="item.end" placeholder="合同结束时间" :disabled="!identity"></el-input>
           </td>
           <td>
             合同内容：
@@ -104,13 +103,13 @@
               :rows="2"
               placeholder="请输入内容"
               v-model="item.content"
-              :disabled="false"
+              :disabled="!identity"
             ></el-input>
           </td>
         </tr>
       </table>
       <div style="overflow: hidden;">
-        <div class="buttomOk" @click="saveContract(item)">保存</div>
+        <div class="buttomOk" @click="saveContract(item)" v-show="identity">保存</div>
       </div>
     </el-dialog>
   </div>
@@ -127,7 +126,21 @@ export default {
       dialogTableVisible: false,
       item: "",
       tableData: [],
-      loadingFlag: true
+      loadingFlag: true,
+      addContractFlag: false,
+      attendan: {
+        people_id: "",
+        department_id: "",
+        time: "",
+        position: "",
+        end: "",
+        contarct_content: "",
+        profile_name: "",
+        profile_abstract: "",
+        profiel_remark: ""
+      },
+      identity: "",
+      options: []
     };
   },
   methods: {
@@ -155,7 +168,6 @@ export default {
         var resData = response.data;
         if (resData.code == 0) {
           this.tableData = resData.data;
-          console.log(resData.data);
           this.loadingFlag = false;
         } else {
           this.$message({
@@ -196,12 +208,24 @@ export default {
             message: resData.msg,
             type: "error"
           });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
         }
       });
+    },
+    showAddDialog() {
+      this.addContractFlag = true;
     }
   },
   mounted() {
     this.token = this.$store.getters.getUserToken;
+    var identity = this.$store.getters.getIdentity;
+    if (identity) {
+      this.identity = true;
+    } else {
+      this.identity = false;
+    }
     this.getAllContract();
   }
 };
@@ -277,8 +301,11 @@ export default {
   height: 5vh;
   line-height: 5vh;
   margin: 1vh 0;
+  overflow: hidden;
 }
 .dataIconArear {
+  float: left;
+  width: 60%;
   margin-left: 0.5vw;
   height: 100%;
 }
@@ -340,7 +367,7 @@ export default {
   height: 100%;
 }
 .buttomOk {
-  box-sizing:border-box;
+  box-sizing: border-box;
   float: left;
   text-align: center;
   width: 5vw;
@@ -353,10 +380,35 @@ export default {
   margin: 1vh 2vw;
 }
 .buttomOk:hover {
-  box-sizing:border-box;
+  box-sizing: border-box;
   background-color: #fff;
   color: #606266;
   border: 1px solid #606266;
   cursor: pointer;
+}
+.addButtom {
+  float: right;
+  /* padding: 1vh; */
+  height: 4vh;
+  line-height: 4vh;
+  padding: 0 1vh;
+  font-size: 0.8vw;
+  background-color: rgba(252, 71, 71, 0.822);
+  color: #fff;
+  margin-right: 2vw;
+  border-radius: 10%;
+}
+.addButtom:hover {
+  color: #606266;
+  background-color: #dcdfe6;
+  cursor: pointer;
+}
+.transBlock {
+  width: 95%;
+  margin: 1vh auto;
+}
+.demonstration {
+  float: left;
+  margin: 0.5vw 0;
 }
 </style>

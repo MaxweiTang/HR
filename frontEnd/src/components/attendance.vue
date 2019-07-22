@@ -1,7 +1,7 @@
 <template>
   <!-- 考勤管理 -->
   <div class="attendance">
-    <div class="seachArea">
+    <!-- <div class="seachArea">
       <div class="iconArear">
         <i class="el-icon-search">筛选搜索</i>
       </div>
@@ -27,13 +27,13 @@
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="seachDataArea" v-loading.lock="loadingFlag">
       <div class="dataTitle">
         <div class="dataIconArear">
           <i class="el-icon-document">数据列表</i>
         </div>
-        <div class="addButtom" @click="showAddDialog">添加</div>
+        <div class="addButtom" @click="showAddDialog" v-show="identity">添加</div>
       </div>
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
@@ -107,6 +107,7 @@ export default {
         time: "",
         status: ""
       },
+      identity: "",
       options: [
         {
           label: "迟到",
@@ -205,6 +206,12 @@ export default {
   },
   mounted() {
     this.token = this.$store.getters.getUserToken;
+    var identity = this.$store.getters.getIdentity;
+    if (identity) {
+      this.identity = true;
+    } else {
+      this.identity = false;
+    }
     this.getAllAttendMsg();
   }
 };

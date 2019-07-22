@@ -3,7 +3,7 @@
   <div class="transfer">
     <el-tabs type="border-card">
       <el-tab-pane label="调动记录">
-        <div class="seachArea">
+        <!-- <div class="seachArea">
           <div class="iconArear">
             <i class="el-icon-search">筛选搜索</i>
           </div>
@@ -25,7 +25,7 @@
               <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
             </div>
           </div>
-        </div>
+        </div>-->
         <div class="seachDataArea" v-loading.lock="loadingFlag">
           <div class="dataTitle">
             <div class="dataIconArear">
@@ -66,7 +66,7 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="调动操作">
-        <div class="seachArea">
+        <!-- <div class="seachArea">
           <div class="iconArear">
             <i class="el-icon-search">筛选搜索</i>
           </div>
@@ -88,7 +88,7 @@
               <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
             </div>
           </div>
-        </div>
+        </div>-->
         <div class="seachDataArea" v-loading="false">
           <div class="dataTitle">
             <div class="dataIconArear">
@@ -113,7 +113,11 @@
               <el-table-column label="操作">
                 <template slot-scope="scope" style="oveflow:hidden">
                   <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">详情</div>
-                  <div class="buttomDelete" @click="handleDelete(scope.$index, scope.row)">调动</div>
+                  <div
+                    class="buttomDelete"
+                    @click="handleDelete(scope.$index, scope.row)"
+                    v-show="identity"
+                  >调动</div>
                 </template>
               </el-table-column>
             </el-table>
@@ -226,7 +230,6 @@ export default {
       tableData1: [],
       // 调动信息
       value: [],
-      personalInfo: {},
       personalInfoHide: {},
       textarea: "",
       dataTime: "",
@@ -243,7 +246,8 @@ export default {
           label: "打工仔",
           value: "打工仔"
         }
-      ]
+      ],
+      identity: ""
     };
   },
   methods: {
@@ -306,6 +310,9 @@ export default {
             message: resData.msg,
             type: "error"
           });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
         }
       });
     },
@@ -329,6 +336,9 @@ export default {
             message: resData.msg,
             type: "error"
           });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
         }
       });
     },
@@ -369,12 +379,21 @@ export default {
             message: resData.msg,
             type: "error"
           });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
         }
       });
     }
   },
   mounted() {
     this.token = this.$store.getters.getUserToken;
+    var identity = this.$store.getters.getIdentity;
+    if (identity) {
+      this.identity = true;
+    } else {
+      this.identity = false;
+    }
     this.getPosition_log();
     this.getAllUserMsg();
   }
@@ -551,5 +570,9 @@ export default {
 }
 .el-textarea {
   width: 65%;
+}
+.demonstration {
+  float: left;
+  margin: 0.5vw 0;
 }
 </style>

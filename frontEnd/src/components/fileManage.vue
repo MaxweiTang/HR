@@ -1,7 +1,7 @@
 <template>
-  <!-- 档案管理 -->
+  <!-- 人员信息管理 -->
   <div class="fileManage">
-    <div class="seachArea">
+    <!-- <div class="seachArea">
       <div class="iconArear">
         <i class="el-icon-search">筛选搜索</i>
       </div>
@@ -31,7 +31,7 @@
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="seachDataArea" v-loading.lock="loadingFlag">
       <div class="dataTitle">
         <div class="dataIconArear">
@@ -56,7 +56,11 @@
           <el-table-column label="操作">
             <template slot-scope="scope" style="oveflow:hidden">
               <div class="buttomDetail" @click="handleDetail(scope.$index, scope.row)">详情</div>
-              <div class="buttomDelete" @click="handleDelete(scope.$index, scope.row)">删除</div>
+              <div
+                class="buttomDelete"
+                @click="handleDelete(scope.$index, scope.row)"
+                v-show="identity"
+              >删除</div>
             </template>
           </el-table-column>
         </el-table>
@@ -70,7 +74,7 @@
         ></el-pagination>
       </div>
     </div>
-    <el-dialog :title="personalInfo.name + '个人档案'" :visible.sync="dialogTableVisible" width="80%">
+    <el-dialog :title="personalInfo.name + '个人信息'" :visible.sync="dialogTableVisible" width="80%">
       <table width="100%" class="infoTable" v-loading.lock="detailLoading">
         <tr>
           <td class="personAvatar" rowspan="2">
@@ -82,7 +86,7 @@
           <td>员工编号：{{ personalInfo.id }}</td>
           <td style="width:10vw;">
             姓名
-            <el-input v-model="personalInfo.name" placeholder="姓名" :disabled="false"></el-input>
+            <el-input v-model="personalInfo.name" placeholder="姓名" :disabled="!identity"></el-input>
           </td>
           <td>性别：{{ personalInfo.sex }}</td>
           <td>部门：{{ personalInfo.department }}</td>
@@ -92,7 +96,7 @@
           <td>出生日期：{{ personalInfoHide.birth }}</td>
           <td colspan="2">
             电话号码：
-            <el-input v-model="personalInfo.tel" placeholder="电话号码" :disabled="false"></el-input>
+            <el-input v-model="personalInfo.tel" placeholder="电话号码" :disabled="!identity"></el-input>
           </td>
           <td>学历：{{ personalInfoHide.degree }}</td>
           <td colspan="2">入职时间：{{ personalInfoHide.register_date }}</td>
@@ -100,7 +104,7 @@
         <tr>
           <td colspan="2">
             邮箱地址：
-            <el-input v-model="personalInfo.email" placeholder="邮箱地址" :disabled="false"></el-input>
+            <el-input v-model="personalInfo.email" placeholder="邮箱地址" :disabled="!identity"></el-input>
           </td>
           <td colspan="5">
             备注：
@@ -109,20 +113,20 @@
               :rows="2"
               placeholder="请输入内容"
               v-model="personalInfo.remark"
-              :disabled="false"
+              :disabled="!identity"
             ></el-input>
           </td>
         </tr>
       </table>
       <div style="overflow: hidden;">
-        <div class="buttomOk" @click="saveContract(personalInfo)">保存</div>
+        <div class="buttomOk" @click="saveContract(personalInfo)" v-show="identity">保存</div>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { constants } from 'crypto';
+import { constants } from "crypto";
 export default {
   name: "fileManage",
   components: {},
@@ -136,12 +140,45 @@ export default {
       personalInfoHide: {},
       token: "",
       loadingFlag: true,
-      detailLoading: true
+      detailLoading: true,
+      identity: ""
     };
   },
   methods: {
     handleDelete(index, row) {
       console.log(index, row);
+      var item = row;
+      // 删除
+      this.$axios({
+        method: "post",
+        url: "/staff/del",
+        data: {
+          id: item.id
+        },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        console.log(resData);
+        if (resData.code == 0) {
+          this.getAllUserMsg();
+          this.$message({
+            message: "修改成功",
+            type: "success"
+          });
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
+            type: "error"
+          });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
+        }
+      });
     },
     handleDetail(index, row) {
       var people_id = row.people_id;
@@ -183,6 +220,7 @@ export default {
           token: this.token
         }
       }).then(response => {
+        console.log(response);
         var resData = response.data;
         if (resData.code == 0) {
           this.tableData = resData.data;
@@ -193,6 +231,9 @@ export default {
             message: resData.msg,
             type: "error"
           });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
         }
       });
     },
@@ -226,12 +267,21 @@ export default {
             message: resData.msg,
             type: "error"
           });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
         }
       });
     }
   },
   mounted() {
     this.token = this.$store.getters.getUserToken;
+    var identity = this.$store.getters.getIdentity;
+    if (identity) {
+      this.identity = true;
+    } else {
+      this.identity = false;
+    }
     this.getAllUserMsg();
   }
 };
@@ -307,10 +357,12 @@ export default {
   height: 5vh;
   line-height: 5vh;
   margin: 1vh 0;
+  overflow: hidden;
 }
 .dataIconArear {
+  float: left;
   margin-left: 0.5vw;
-  height: 100%;
+  height: 60%;
 }
 .dataLsitArea {
   width: 95%;
@@ -385,5 +437,9 @@ export default {
   color: #606266;
   border: 1px solid #606266;
   cursor: pointer;
+}
+.demonstration {
+  float: left;
+  margin: 0.5vw 0;
 }
 </style>

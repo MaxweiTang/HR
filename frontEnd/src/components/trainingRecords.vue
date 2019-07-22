@@ -1,7 +1,7 @@
 <template>
   <!-- 培训记录 -->
   <div class="trainingRecords">
-    <div class="seachArea">
+    <!-- <div class="seachArea">
       <div class="iconArear">
         <i class="el-icon-search">筛选搜索</i>
       </div>
@@ -31,12 +31,13 @@
           <el-input v-model="input" placeholder="请输入内容" size="mini"></el-input>
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="seachDataArea" v-loading="false">
       <div class="dataTitle">
         <div class="dataIconArear">
           <i class="el-icon-document">数据列表</i>
         </div>
+        <div class="addButtom" @click="showAddDialog" v-show="identity">添加</div>
       </div>
       <div class="dataLsitArea">
         <el-table :data="tableData" border style="width: 100%">
@@ -64,6 +65,40 @@
         ></el-pagination>
       </div>
     </div>
+    <el-dialog title="添加培训记录" :visible.sync="dialogTableVisible" width="40%">
+      <div style="overflow: hidden;width:60%;margin: 0 auto;">
+        <div class="transBlock">
+          <span class="demonstration">员工Id:</span>
+          <el-input v-model="attendan.staff_id" placeholder="员工Id"></el-input>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">选择日期：</span>
+          <el-date-picker
+            v-model="attendan.time"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">项目：</span>
+          <el-select v-model="attendan.program_id" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="transBlock">
+          <span class="demonstration">评价:</span>
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="attendan.result"></el-input>
+        </div>
+        <div class="buttomOk" @click="handleTransfer">保存</div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -81,36 +116,14 @@ export default {
       tableData: [],
       // 部门/职位
       value: [],
-      options: [
-        {
-          label: "开发",
-          value: "开发",
-          children: [
-            {
-              label: "主管",
-              value: "主管"
-            },
-            {
-              label: "职员",
-              value: "职员"
-            }
-          ]
-        },
-        {
-          label: "营销",
-          value: "主管",
-          children: [
-            {
-              label: "主管",
-              value: "主管"
-            },
-            {
-              label: "职员",
-              value: "职员"
-            }
-          ]
-        }
-      ]
+      options: [],
+      attendan: {
+        staff_id: "",
+        program_id: "",
+        time: "",
+        result: ""
+      },
+      identity: ""
     };
   },
   methods: {
@@ -135,6 +148,7 @@ export default {
       }).then(response => {
         var resData = response.data;
         if (resData.code == 0) {
+          console.log(resData.data);
           this.tableData = resData.data;
         } else {
           this.$message({
@@ -142,13 +156,87 @@ export default {
             message: resData.msg,
             type: "error"
           });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
+        }
+      });
+    },
+    showAddDialog() {
+      this.dialogTableVisible = true;
+    },
+    getAllProgram() {
+      this.$axios({
+        method: "get",
+        url: "/program/list",
+        data: {
+          staff_id: ""
+        },
+        headers: {
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        if (resData.code == 0) {
+          this.options = resData.data;
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
+            type: "error"
+          });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
+        }
+      });
+    },
+    handleTransfer() {
+      var attendan = this.attendan;
+      this.$axios({
+        method: "post",
+        url: "/staff/train",
+        data: {
+          staff_id: attendan.staff_id,
+          program_id: attendan.program_id,
+          time: attendan.time,
+          result: attendan.result
+        },
+        headers: {
+          "Content-Type": "application/json",
+          token: this.token
+        }
+      }).then(response => {
+        var resData = response.data;
+        if (resData.code == 0) {
+          this.getAllTrainList();
+          this.$message({
+            message: "添加成功",
+            type: "success"
+          });
+        } else {
+          this.$message({
+            showClose: true,
+            message: resData.msg,
+            type: "error"
+          });
+          if (resData.msg == "登录信息失效，请重新登录") {
+            this.$router.push({ path: "/" });
+          }
         }
       });
     }
   },
   mounted() {
     this.token = this.$store.getters.getUserToken;
+    var identity = this.$store.getters.getIdentity;
+    if (identity) {
+      this.identity = true;
+    } else {
+      this.identity = false;
+    }
     this.getAllTrainList();
+    this.getAllProgram();
   }
 };
 </script>
@@ -222,8 +310,11 @@ export default {
   height: 5vh;
   line-height: 5vh;
   margin: 1vh 0;
+  overflow: hidden;
 }
 .dataIconArear {
+  float: left;
+  width: 60%;
   margin-left: 0.5vw;
   height: 100%;
 }
@@ -290,5 +381,26 @@ export default {
 }
 .seachItem > input {
   height: 100%;
+}
+.addButtom {
+  float: right;
+  /* padding: 1vh; */
+  height: 4vh;
+  line-height: 4vh;
+  padding: 0 1vh;
+  font-size: 0.8vw;
+  background-color: rgba(252, 71, 71, 0.822);
+  color: #fff;
+  margin-right: 2vw;
+  border-radius: 10%;
+}
+.addButtom:hover {
+  color: #606266;
+  background-color: #dcdfe6;
+  cursor: pointer;
+}
+.demonstration {
+  float: left;
+  margin: 0.5vw 0;
 }
 </style>
