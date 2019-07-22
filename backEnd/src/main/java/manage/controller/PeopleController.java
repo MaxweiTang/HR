@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import manage.model.VO.PeopleSelectVO;
 import manage.model.VO.PeopleVO;
@@ -17,12 +18,13 @@ import manage.util.ResultVOUtil;
 
 @RequestMapping(value = "people")
 // @CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
 public class PeopleController {
     @Autowired
     PeopleService peopleService;
 
     @RequestMapping(value = "new", method = RequestMethod.POST)
-    public ResultVO train(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody PeopleVO pVo) {
+    public ResultVO train(@RequestAttribute("userid") UserInfoVO uVo, @RequestBody PeopleVO pVo) throws Exception{
         // 验证用户权限
         // 培训
         if (!peopleService.newPeople(pVo)) {

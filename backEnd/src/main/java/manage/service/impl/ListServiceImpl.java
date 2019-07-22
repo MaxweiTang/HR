@@ -1,7 +1,11 @@
 package manage.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.util.BeanUtil;
 
@@ -15,6 +19,7 @@ import manage.dao.PeopleMapper;
 import manage.dao.PositionLogMapper;
 import manage.dao.ProfileMapper;
 import manage.dao.ProgramMapper;
+import manage.dao.SalaryMapper;
 import manage.dao.StaffMapper;
 import manage.dao.TrainMapper;
 import manage.dao.UserAuthMapper;
@@ -25,6 +30,7 @@ import manage.model.DO.People;
 import manage.model.DO.PositionLog;
 import manage.model.DO.Profile;
 import manage.model.DO.Program;
+import manage.model.DO.Salary;
 import manage.model.DO.Staff;
 import manage.model.DO.Train;
 import manage.model.DO.UserAuth;
@@ -39,6 +45,8 @@ import manage.model.VO.PositionLogListVO;
 import manage.model.VO.PositionLogSelectVO;
 import manage.model.VO.ProfileListVO;
 import manage.model.VO.ProfileSelectVO;
+import manage.model.VO.SalaryListVO;
+import manage.model.VO.SalarySelectVO;
 import manage.model.VO.StaffListVO;
 import manage.model.VO.StaffSelectVO;
 import manage.model.VO.TrainInfoVO;
@@ -70,13 +78,15 @@ public class ListServiceImpl implements ListService {
     ContractMapper contractMapper;
     @Autowired
     AttendanceMapper attendanceMapper;
+    @Autowired
+    SalaryMapper salaryMapper;
 
     // 若 pvo 设置了 peole_id，选择特定用户的ID
     public List<PeopleListVO> people(PeopleSelectVO pVo) {
         List<PeopleListVO> list = new ArrayList();
         if (pVo.getPeople_id() != null && pVo.getPeople_id() != "") {
             People oldPeople = peopleMapper.selectByPrimaryKey(pVo.getPeople_id());
-            if (oldPeople == null) {
+            if (oldPeople == null || oldPeople.getDeleted() == 1) {
                 return list;
             }
             PeopleListVO pListVO = new PeopleListVO();
@@ -102,6 +112,9 @@ public class ListServiceImpl implements ListService {
         }
         List<People> peoples = peopleMapper.selectAll();
         for (People oldPeople : peoples) {
+            if (oldPeople.getDeleted() == 1) {
+                continue;
+            }
             PeopleListVO pListVO = new PeopleListVO();
 
             pListVO.setId(oldPeople.getId());
@@ -129,7 +142,7 @@ public class ListServiceImpl implements ListService {
         List<StaffListVO> list = new ArrayList();
         if (sVo.getStaff_id() != null && sVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(sVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
             StaffListVO sListVO = new StaffListVO();
@@ -155,6 +168,10 @@ public class ListServiceImpl implements ListService {
         }
         List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
+
             StaffListVO sListVO = new StaffListVO();
 
             sListVO.setId(oldStaff.getId());
@@ -186,6 +203,9 @@ public class ListServiceImpl implements ListService {
         List<Program> programs = programMapper.selectAll();
         List<TrainProgramVO> trainProgramVOs = new ArrayList<TrainProgramVO>();
         for (Program program : programs) {
+            if (program.getDeleted() == 1) {
+                continue;
+            }
             TrainProgramVO trainProgramVO = new TrainProgramVO();
             trainProgramVO.setId(program.getId());
             trainProgramVO.setName(program.getName());
@@ -253,7 +273,6 @@ public class ListServiceImpl implements ListService {
             tIVo.setStaff_id(oldStaff.getId());
 
             list.add(tIVo);
-            return list;
         }
         return list;
     }
@@ -265,6 +284,9 @@ public class ListServiceImpl implements ListService {
         List<Department> departments = departmentMapper.selectAll();
         List<DepartmentListVO> departmentListVOs = new ArrayList<DepartmentListVO>();
         for (Department department : departments) {
+            if (department.getDeleted() == 1) {
+                continue;
+            }
             DepartmentListVO departmentListVO = new DepartmentListVO();
             departmentListVO.setId(department.getId());
             departmentListVO.setName(department.getName());
@@ -280,7 +302,7 @@ public class ListServiceImpl implements ListService {
         List<ProfileListVO> list = new ArrayList();
         if (pVo.getStaff_id() != null && pVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(pVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
             ProfileListVO profileListVO = new ProfileListVO();
@@ -309,6 +331,9 @@ public class ListServiceImpl implements ListService {
         }
         List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
             Profile profile = profileMapper.selectByPrimaryKey(oldStaff.getProfileId());
             ProfileListVO profileListVO = new ProfileListVO();
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
@@ -339,7 +364,7 @@ public class ListServiceImpl implements ListService {
         List<ContractListVO> list = new ArrayList();
         if (cVo.getStaff_id() != null && cVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(cVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
 
@@ -383,6 +408,9 @@ public class ListServiceImpl implements ListService {
         }
         List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
             String avatar;
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
             if (userAuth == null) {
@@ -430,7 +458,7 @@ public class ListServiceImpl implements ListService {
         List<AttendantListVO> list = new ArrayList();
         if (aVo.getStaff_id() != null && aVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(aVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
 
@@ -468,8 +496,11 @@ public class ListServiceImpl implements ListService {
         for (Attendance oldAttendance : attendances) {
 
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldAttendance.getStaffId());
-            People oldPeople = peopleMapper
-                    .selectByPrimaryKey(staffMapper.selectByPrimaryKey(oldAttendance.getStaffId()).getPid());
+            Staff oldStaff = staffMapper.selectByPrimaryKey(oldAttendance.getStaffId());
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
+            People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
 
             AttendantListVO attendantListVO = new AttendantListVO();
 
@@ -502,7 +533,7 @@ public class ListServiceImpl implements ListService {
         List<PositionLogListVO> list = new ArrayList();
         if (aVo.getStaff_id() != null && aVo.getStaff_id() != "") {
             Staff oldStaff = staffMapper.selectByPrimaryKey(aVo.getStaff_id());
-            if (oldStaff == null) {
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
                 return list;
             }
 
@@ -541,6 +572,9 @@ public class ListServiceImpl implements ListService {
         }
         List<Staff> staffs = staffMapper.selectAll();
         for (Staff oldStaff : staffs) {
+            if (oldStaff.getDeleted() == 1) {
+                continue;
+            }
 
             UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
             People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
@@ -574,5 +608,130 @@ public class ListServiceImpl implements ListService {
             }
         }
         return list;
+    }
+
+    /**
+     * 应聘人员记录
+     */
+    public List<PeopleListVO> peopleUList() {
+        // 找出所有没在 staff 中的 people id
+        List<People> peoples = peopleMapper.selectAll();
+        List<Object> pids = staffMapper.selectAll().stream().map((staff) -> staff.getPid())
+                .collect(Collectors.toList());
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (Object obj : pids) {
+            map.put((String) obj, 1);
+        }
+        List<PeopleListVO> list = new ArrayList<PeopleListVO>();
+        for (People oldPeople : peoples) {
+            if (!map.containsKey(oldPeople.getId())) {
+                PeopleListVO pListVO = new PeopleListVO();
+
+                pListVO.setId(oldPeople.getId());
+                // HECK
+                try {
+                    pListVO.setBirth(DateUtil.reverse(oldPeople.getBirth()));
+                    pListVO.setRegister_date(DateUtil.reverse(oldPeople.getRegisterDate()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+
+                pListVO.setDegree(oldPeople.getDegree());
+                pListVO.setEmail(oldPeople.getEmail());
+                pListVO.setName(oldPeople.getName());
+                pListVO.setRemark(oldPeople.getRemark());
+                pListVO.setSex(oldPeople.getSex());
+                pListVO.setTel(oldPeople.getTel());
+                list.add(pListVO);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 工资
+     */
+    public List<SalaryListVO> salary(SalarySelectVO sVo) {
+        List<SalaryListVO> list = new ArrayList();
+        if (sVo.getStaff_id() != null && sVo.getStaff_id() != "") {
+            Staff oldStaff = staffMapper.selectByPrimaryKey(sVo.getStaff_id());
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
+                return list;
+            }
+
+            UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
+            People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
+
+            List<Salary> salaries = salaryMapper.selectByStaffId(oldStaff.getId());
+
+            for (Salary a : salaries) {
+                SalaryListVO salaryListVO = new SalaryListVO();
+
+                if (userAuth == null) {
+                    salaryListVO.setAvatar("");
+                } else {
+                    salaryListVO.setAvatar(userAuth.getAvatar());
+                }
+                salaryListVO.setName(oldPeople.getName());
+
+                salaryListVO.setSex(oldPeople.getSex());
+                salaryListVO.setStaff_id(oldStaff.getId());
+
+                salaryListVO.setBase(String.valueOf(a.getBase()));
+                salaryListVO.setExtra(String.valueOf(a.getExtra()));
+                salaryListVO.setBonus(String.valueOf(a.getBonus()));
+                salaryListVO.setFine(String.valueOf(a.getFine()));
+                salaryListVO.setTotal(String.valueOf(a.getTotal()));
+
+                try {
+                    salaryListVO.setTime(DateUtil.reverse(a.getTime()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                list.add(salaryListVO);
+            }
+
+            return list;
+        }
+        List<Salary> salaries = salaryMapper.selectAll();
+        for (Salary a : salaries) {
+            Staff oldStaff = staffMapper.selectByPrimaryKey(a.getStaffId());
+            if (oldStaff == null || oldStaff.getDeleted() == 1) {
+                return list;
+            }
+
+            UserAuth userAuth = userAuthMapper.selectByStaffId(oldStaff.getId());
+            People oldPeople = peopleMapper.selectByPrimaryKey(oldStaff.getPid());
+
+            SalaryListVO salaryListVO = new SalaryListVO();
+
+            if (userAuth == null) {
+                salaryListVO.setAvatar("");
+            } else {
+                salaryListVO.setAvatar(userAuth.getAvatar());
+            }
+            salaryListVO.setName(oldPeople.getName());
+
+            salaryListVO.setSex(oldPeople.getSex());
+            salaryListVO.setStaff_id(oldStaff.getId());
+
+            salaryListVO.setBase(String.valueOf(a.getBase()));
+            salaryListVO.setExtra(String.valueOf(a.getExtra()));
+            salaryListVO.setBonus(String.valueOf(a.getBonus()));
+            salaryListVO.setFine(String.valueOf(a.getFine()));
+            salaryListVO.setTotal(String.valueOf(a.getTotal()));
+
+            try {
+                salaryListVO.setTime(DateUtil.reverse(a.getTime()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+            list.add(salaryListVO);
+        }
+        return list;
+
     }
 }

@@ -29,7 +29,7 @@
   <insert id="insert" parameterType="manage.model.DO.Profile" >
     insert into profile (id, name, abstract, 
       remark, deleted)
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{abstract,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{abstracts,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR}, #{deleted,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="manage.model.DO.Profile" >
@@ -41,7 +41,7 @@
       <if test="name != null" >
         name,
       </if>
-      <if test="abstract != null" >
+      <if test="abstracts != null" >
         abstract,
       </if>
       <if test="remark != null" >
@@ -58,8 +58,8 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="abstract != null" >
-        #{abstract,jdbcType=VARCHAR},
+      <if test="abstracts != null" >
+        #{abstracts,jdbcType=VARCHAR},
       </if>
       <if test="remark != null" >
         #{remark,jdbcType=VARCHAR},
@@ -75,8 +75,8 @@
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="abstract != null" >
-        abstract = #{abstract,jdbcType=VARCHAR},
+      <if test="abstracts != null" >
+        abstract = #{abstracts,jdbcType=VARCHAR},
       </if>
       <if test="remark != null" >
         remark = #{remark,jdbcType=VARCHAR},
@@ -90,7 +90,7 @@
   <update id="updateByPrimaryKey" parameterType="manage.model.DO.Profile" >
     update profile
     set name = #{name,jdbcType=VARCHAR},
-      abstract = #{abstract,jdbcType=VARCHAR},
+      abstract = #{abstracts,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       deleted = #{deleted,jdbcType=TINYINT}
     where id = #{id,jdbcType=VARCHAR}

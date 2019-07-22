@@ -7,5 +7,5 @@ import manage.model.VO.PeopleSelectVO;
 import manage.model.VO.PeopleVO;
 
 public interface PeopleService {
-    boolean newPeople(PeopleVO pVo);
+    boolean newPeople(PeopleVO pVo) throws Exception;
 }
