@@ -22,7 +22,7 @@
     <!-- 用来设置版本号 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <srping.version>5.1.8.RELEASE</srping.version>
+        <srping.version>5.2.3.RELEASE</srping.version>
         <org.springframework.security.version>4.1.0.RELEASE</org.springframework.security.version>
         <mybatis.version>3.2.8</mybatis.version>
         <org.aspectj-version>1.8.1</org.aspectj-version>
